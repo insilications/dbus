@@ -8,5 +8,9 @@
 --with-console-auth-dir=/run/console/
 --sysconfdir=/etc2
 --with-x
+--enable-qt-help=yes
 --enable-shared
 --enable-static
+--with-test-user=boni
+--enable-tests
+--disable-asserts

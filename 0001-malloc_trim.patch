@@ -1,0 +1,38 @@
+From b1b5fa459263e855ad3f313c77808aca66b25ce0 Mon Sep 17 00:00:00 2001
+From: Francisco Boni <boboniboni@gmail.com>
+Date: Thu, 28 Jan 2021 11:53:49 -0300
+Subject: [PATCH] malloc_trim
+
+---
+ bus/main.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/bus/main.c b/bus/main.c
+index 84f601b3..238b0129 100644
+--- a/bus/main.c
++++ b/bus/main.c
+@@ -29,6 +29,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <malloc.h>
+ #ifdef HAVE_SIGNAL_H
+ #include <signal.h>
+ #endif
+@@ -723,6 +724,13 @@ main (int argc, char **argv)
+ 
+   _dbus_verbose ("We are on D-Bus...\n");
+   _dbus_daemon_report_ready ();
++/*
++* during init we may have allocated and then freed memory, which
++* the C library will buffer for us. This is a good place to really
++* free that memory. Any memory we allocate/free during our normal
++* operation will still use the C library buffers.
++*/
++  malloc_trim(0);
+   _dbus_loop_run (bus_context_get_loop (context));
+ 
+   bus_context_shutdown (context);
+-- 
+2.30.0
+
