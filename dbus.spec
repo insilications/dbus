@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 506
+Release  : 508
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
@@ -19,6 +19,7 @@ BuildRequires : doxygen
 BuildRequires : expat-dev
 BuildRequires : expat-dev32
 BuildRequires : expat-staticdev
+BuildRequires : expat-staticdev32
 BuildRequires : gcc
 BuildRequires : gcc-dev
 BuildRequires : gcc-dev32
@@ -57,6 +58,8 @@ BuildRequires : pkgconfig(valgrind)
 BuildRequires : pkgconfig(x11)
 BuildRequires : python-dbusmock
 BuildRequires : qttools-dev
+BuildRequires : systemd-dev
+BuildRequires : systemd-dev32
 BuildRequires : xmlto
 BuildRequires : xvfb-run
 BuildRequires : xvfbwrapper
@@ -96,9 +99,10 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1638800742
+export SOURCE_DATE_EPOCH=1638801199
 export GCC_IGNORE_WERROR=1
 ## altflags1 content
+unset ASFLAGS
 export CFLAGS="-g3 -ggdb -Ofast --param=lto-max-streaming-parallelism=16 -march=native -mtune=native -fgraphite-identity -Wall -Wl,--as-needed -Wl,--build-id=sha1 -Wl,--enable-new-dtags -Wl,--hash-style=gnu -Wl,-O2 -Wl,-z,now,-z,relro,-z,max-page-size=0x1000,-z,separate-code -Wno-error -mprefer-vector-width=256 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -floop-nest-optimize -floop-block -fno-math-errno -fno-semantic-interposition -Wl,-Bsymbolic-functions -fno-stack-protector -fno-trapping-math -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-slp-vectorize -ftree-vectorize -fuse-ld=bfd -fuse-linker-plugin -malign-data=cacheline -feliminate-unused-debug-types -fipa-pta -flto=auto -fno-plt -mtls-dialect=gnu2 -Wl,-sort-common -Wno-error -Wp,-D_REENTRANT -pipe -ffat-lto-objects -fPIC -fomit-frame-pointer -fexceptions -static-libstdc++ -static-libgcc -Wl,--build-id=sha1"
 ## -fno-tree-vectorize: disable -ftree-vectorize thus disable -ftree-loop-vectorize and -ftree-slp-vectorize -fopt-info-vec
 ## -Ofast -ffast-math
@@ -227,6 +231,7 @@ popd
 pushd ../build-special/
 export GCC_IGNORE_WERROR=1
 ## altflags1 content
+unset ASFLAGS
 export CFLAGS="-g3 -ggdb -Ofast --param=lto-max-streaming-parallelism=16 -march=native -mtune=native -fgraphite-identity -Wall -Wl,--as-needed -Wl,--build-id=sha1 -Wl,--enable-new-dtags -Wl,--hash-style=gnu -Wl,-O2 -Wl,-z,now,-z,relro,-z,max-page-size=0x1000,-z,separate-code -Wno-error -mprefer-vector-width=256 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -floop-nest-optimize -floop-block -fno-math-errno -fno-semantic-interposition -Wl,-Bsymbolic-functions -fno-stack-protector -fno-trapping-math -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-slp-vectorize -ftree-vectorize -fuse-ld=bfd -fuse-linker-plugin -malign-data=cacheline -feliminate-unused-debug-types -fipa-pta -flto=auto -fno-plt -mtls-dialect=gnu2 -Wl,-sort-common -Wno-error -Wp,-D_REENTRANT -pipe -ffat-lto-objects -fPIC -fomit-frame-pointer -fexceptions -static-libstdc++ -static-libgcc -Wl,--build-id=sha1"
 ## -fno-tree-vectorize: disable -ftree-vectorize thus disable -ftree-loop-vectorize and -ftree-slp-vectorize -fopt-info-vec
 ## -Ofast -ffast-math
@@ -317,7 +322,7 @@ make  %{?_smp_mflags}    V=1 VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1638800742
+export SOURCE_DATE_EPOCH=1638801199
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32

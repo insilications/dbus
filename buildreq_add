@@ -8,6 +8,7 @@ doxygen
 expat-dev
 expat-dev32
 expat-staticdev
+expat-staticdev32
 gcc-dev32
 gcc-libgcc32
 gcc-libstdc++32
