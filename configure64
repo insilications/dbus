@@ -2,6 +2,7 @@
 --disable-asserts
 --disable-installed-tests
 --enable-static
+--disable-xml-docs
 --with-systemdunitdir=/usr/lib/systemd/system
 --enable-systemd
 --enable-user-session

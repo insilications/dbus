@@ -1,9 +1,9 @@
 # This file contains additional build requirements that did not get
-# picked up automatically. One name per line, no whitespace.
-buildreq-cmake
+# picked up automatically. One name per line, no whitespace.buildreq-cmake
 dbus-glib
 dbus-python
 dbus-python-dev
+docbook-xml
 doxygen
 expat-dev
 expat-dev32
@@ -17,10 +17,14 @@ glibc-libc32
 glib-dev
 glib-dev32
 gnupg
+libxml2-dev
 libxslt-bin
 perl(XML::Parser)
 pkg-config
 python-dbusmock
+qttools-dev
+systemd-dev
+systemd-dev32
 xmlto
 xvfbwrapper
 xvfb-run

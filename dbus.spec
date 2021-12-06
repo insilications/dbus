@@ -5,16 +5,16 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 504
+Release  : 506
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
 Group    : Development/Tools
 License  : AFL-2.1 GPL-2.0+
-BuildRequires : buildreq-cmake
 BuildRequires : dbus-glib
 BuildRequires : dbus-python
 BuildRequires : dbus-python-dev
+BuildRequires : docbook-xml
 BuildRequires : doxygen
 BuildRequires : expat-dev
 BuildRequires : expat-dev32
@@ -36,6 +36,7 @@ BuildRequires : glibc-libc32
 BuildRequires : gnupg
 BuildRequires : libgcc1
 BuildRequires : libstdc++
+BuildRequires : libxml2-dev
 BuildRequires : libxslt-bin
 BuildRequires : perl(XML::Parser)
 BuildRequires : pkg-config
@@ -55,6 +56,7 @@ BuildRequires : pkgconfig(systemd)
 BuildRequires : pkgconfig(valgrind)
 BuildRequires : pkgconfig(x11)
 BuildRequires : python-dbusmock
+BuildRequires : qttools-dev
 BuildRequires : xmlto
 BuildRequires : xvfb-run
 BuildRequires : xvfbwrapper
@@ -94,7 +96,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1638800532
+export SOURCE_DATE_EPOCH=1638800742
 export GCC_IGNORE_WERROR=1
 ## altflags1 content
 export CFLAGS="-g3 -ggdb -Ofast --param=lto-max-streaming-parallelism=16 -march=native -mtune=native -fgraphite-identity -Wall -Wl,--as-needed -Wl,--build-id=sha1 -Wl,--enable-new-dtags -Wl,--hash-style=gnu -Wl,-O2 -Wl,-z,now,-z,relro,-z,max-page-size=0x1000,-z,separate-code -Wno-error -mprefer-vector-width=256 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -floop-nest-optimize -floop-block -fno-math-errno -fno-semantic-interposition -Wl,-Bsymbolic-functions -fno-stack-protector -fno-trapping-math -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-slp-vectorize -ftree-vectorize -fuse-ld=bfd -fuse-linker-plugin -malign-data=cacheline -feliminate-unused-debug-types -fipa-pta -flto=auto -fno-plt -mtls-dialect=gnu2 -Wl,-sort-common -Wno-error -Wp,-D_REENTRANT -pipe -ffat-lto-objects -fPIC -fomit-frame-pointer -fexceptions -static-libstdc++ -static-libgcc -Wl,--build-id=sha1"
@@ -173,6 +175,7 @@ sd -r 'git describe' 'git describe --abbrev=0' .
 --disable-asserts \
 --disable-installed-tests \
 --enable-static \
+--disable-xml-docs \
 --with-systemdunitdir=/usr/lib/systemd/system \
 --enable-systemd \
 --enable-user-session \
@@ -207,6 +210,7 @@ export FFLAGS="-O2 -ffat-lto-objects -fuse-linker-plugin -fvisibility-inlines-hi
 export CFFLAGS="-O2 -ffat-lto-objects -fuse-linker-plugin -fvisibility-inlines-hidden -pipe -fPIC -march=native -mtune=native -m32 -mstackrealign"
 export LDFLAGS="-O2 -ffat-lto-objects -fuse-linker-plugin -pipe -fPIC -march=native -mtune=native -m32 -mstackrealign"
 %autogen  --disable-static \
+--disable-xml-docs \
 --with-systemdunitdir=/usr/lib/systemd/system \
 --enable-systemd \
 --enable-user-session \
@@ -299,6 +303,7 @@ sd -r 'git describe' 'git describe --abbrev=0' .
 --disable-asserts \
 --disable-installed-tests \
 --enable-static \
+--disable-xml-docs \
 --with-systemdunitdir=/usr/lib/systemd/system \
 --enable-systemd \
 --enable-user-session \
@@ -312,7 +317,7 @@ make  %{?_smp_mflags}    V=1 VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1638800532
+export SOURCE_DATE_EPOCH=1638800742
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
@@ -329,9 +334,12 @@ for i in *.pc ; do ln -s $i 32$i ; done
 popd
 fi
 popd
+## install_macro_build_special start
 pushd ../build-special/
 %make_install_special
+install -m755 tools/.libs/dbus-launch %{buildroot}/usr/bin/dbus-launch.x11
 popd
+## install_macro_build_special end
 %make_install
 ## Remove excluded files
 rm -f %{buildroot}*/usr/lib/sysusers.d/dbus.conf
