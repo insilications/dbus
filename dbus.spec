@@ -5,13 +5,12 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 510
+Release  : 513
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
 Group    : Development/Tools
 License  : AFL-2.1 GPL-2.0+
-BuildRequires : buildreq-cmake
 BuildRequires : dbus-glib
 BuildRequires : dbus-python
 BuildRequires : dbus-python-dev
@@ -97,7 +96,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1638804394
+export SOURCE_DATE_EPOCH=1638805786
 export GCC_IGNORE_WERROR=1
 ## altflags1 content
 unset ASFLAGS
@@ -178,8 +177,11 @@ sd -r 'git describe' 'git describe --abbrev=0' .
 %autogen  --disable-tests \
 --disable-asserts \
 --disable-installed-tests \
+--disable-stats \
+--enable-debug=no \
 --enable-static \
 --disable-xml-docs \
+--runstatedir=/run \
 --with-systemdunitdir=/usr/lib/systemd/system \
 --enable-systemd \
 --enable-user-session \
@@ -230,7 +232,7 @@ make  %{?_smp_mflags}    V=1 VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1638804394
+export SOURCE_DATE_EPOCH=1638805786
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32

@@ -1,8 +1,11 @@
 --disable-tests
 --disable-asserts
 --disable-installed-tests
+--disable-stats
+--enable-debug=no
 --enable-static
 --disable-xml-docs
+--runstatedir=/run
 --with-systemdunitdir=/usr/lib/systemd/system
 --enable-systemd
 --enable-user-session

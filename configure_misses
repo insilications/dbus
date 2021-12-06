@@ -1,64 +1,43 @@
 Configure miss: ADT API
 Configure miss: ADT API
-Configure miss: ADT API
-Configure miss: APPARMOR
 Configure miss: APPARMOR
 Configure miss: APPARMOR
 Configure miss: APPARMOR_2_10
 Configure miss: APPARMOR_2_10
-Configure miss: APPARMOR_2_10
-Configure miss: SELINUX
 Configure miss: SELINUX
 Configure miss: SELINUX
 Configure miss: audit_log_user_avc_message in -laudit
 Configure miss: audit_log_user_avc_message in -laudit
-Configure miss: audit_log_user_avc_message in -laudit
-Configure miss: ducktype
 Configure miss: ducktype
 Configure miss: ducktype
 Configure miss: g++ option to enable C++11 features
 Configure miss: g++ option to enable C++11 features
-Configure miss: g++ option to enable C++11 features
-Configure miss: gcc options needed to detect all undeclared functions
 Configure miss: gcc options needed to detect all undeclared functions
 Configure miss: gcc options needed to detect all undeclared functions
 Configure miss: i686-generic-linux-gnu-windres
 Configure miss: launch.h
 Configure miss: launch.h
-Configure miss: launch.h
-Configure miss: launchctl
 Configure miss: launchctl
 Configure miss: launchctl
 Configure miss: struct cmsgcred
 Configure miss: struct cmsgcred
-Configure miss: struct cmsgcred
-Configure miss: struct unpcbid.unp_pid
 Configure miss: struct unpcbid.unp_pid
 Configure miss: struct unpcbid.unp_pid
 Configure miss: sys/event.h
 Configure miss: sys/event.h
-Configure miss: sys/event.h
-Configure miss: sys/syslimits.h
 Configure miss: sys/syslimits.h
 Configure miss: sys/syslimits.h
 Configure miss: whether C++ compiler accepts -Werror=unknown-warning-option
 Configure miss: whether C++ compiler accepts -Werror=unknown-warning-option
-Configure miss: whether C++ compiler accepts -Werror=unknown-warning-option
-Configure miss: whether to build Ducktype documentation
 Configure miss: whether to build Ducktype documentation
 Configure miss: whether to build Ducktype documentation
 Configure miss: whether to build XML documentation
 Configure miss: whether to build XML documentation
-Configure miss: whether to build XML documentation
-Configure miss: whether to enable debugging
 Configure miss: whether to enable debugging
 Configure miss: whether to enable debugging
 Configure miss: windres
 Configure miss: windres
-Configure miss: windres
 Configure miss: ws2tcpip.h
 Configure miss: ws2tcpip.h
-Configure miss: ws2tcpip.h
-Configure miss: yelp-build
 Configure miss: yelp-build
 Configure miss: yelp-build

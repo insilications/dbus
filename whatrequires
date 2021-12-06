@@ -86,6 +86,7 @@ dbus-glib-dev
 dbus-glib-dev32
 dbus-python
 dbus-python-dev
+dbus-staticdev
 dconf
 dconf-editor
 devhelp

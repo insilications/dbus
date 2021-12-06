@@ -33,7 +33,6 @@ libdbus-1.so.3:_dbus_concat_dir_and_file
 libdbus-1.so.3:_dbus_connection_get_credentials
 libdbus-1.so.3:_dbus_connection_get_linux_security_label
 libdbus-1.so.3:_dbus_connection_get_pending_fds_count
-libdbus-1.so.3:_dbus_connection_get_stats
 libdbus-1.so.3:_dbus_connection_lock
 libdbus-1.so.3:_dbus_connection_ref_unlocked
 libdbus-1.so.3:_dbus_connection_set_pending_fds_function
@@ -136,7 +135,6 @@ libdbus-1.so.3:_dbus_list_get_first_link
 libdbus-1.so.3:_dbus_list_get_last
 libdbus-1.so.3:_dbus_list_get_last_link
 libdbus-1.so.3:_dbus_list_get_length
-libdbus-1.so.3:_dbus_list_get_stats
 libdbus-1.so.3:_dbus_list_insert_after
 libdbus-1.so.3:_dbus_list_insert_after_link
 libdbus-1.so.3:_dbus_list_insert_before_link
