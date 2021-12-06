@@ -1,5 +1,19 @@
 # This file contains additional build requirements that did not get
 # picked up automatically. One name per line, no whitespace.
+buildreq-cmake
+doxygen
 expat-dev
 expat-dev32
-
+expat-staticdev
+gcc-dev32
+gcc-libgcc32
+gcc-libstdc++32
+gettext
+glibc-dev32
+glibc-libc32
+libxslt-bin
+perl(XML::Parser)
+pkg-config
+xmlto
+xvfbwrapper
+xvfb-run
