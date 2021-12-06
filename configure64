@@ -1,6 +1,8 @@
+--disable-tests
+--disable-asserts
+--disable-installed-tests
 --enable-static
 --with-systemdunitdir=/usr/lib/systemd/system
---disable-xml-docs
 --enable-systemd
 --enable-user-session
 --enable-epoll
@@ -8,4 +10,4 @@
 --with-system-pid-file=/run/dbus/pid
 --with-console-auth-dir=/run/console/
 --sysconfdir=/etc2
---without-x
+--with-x

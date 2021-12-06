@@ -1,4 +1,7 @@
---disable-static
+--disable-tests
+--disable-asserts
+--disable-installed-tests
+--enable-static
 --with-systemdunitdir=/usr/lib/systemd/system
 --enable-systemd
 --enable-user-session
@@ -8,5 +11,3 @@
 --with-console-auth-dir=/run/console/
 --sysconfdir=/etc2
 --without-x
---without-dbus-glib
---disable-tests

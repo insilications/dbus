@@ -1,7 +1,7 @@
-From 0ecd9a320a94998f1b7066b5997b3e43a9c8a586 Mon Sep 17 00:00:00 2001
+From 297cf78c501efbbdc3a5d9ddb0fa2ed282e11b72 Mon Sep 17 00:00:00 2001
 From: Thiago Macieira <thiago.macieira@intel.com>
 Date: Tue, 7 May 2019 16:04:28 -0700
-Subject: [PATCH] Make the non-X11 dbus-launch exec the X11-enabled one
+Subject: [PATCH 4/4] Make the non-X11 dbus-launch exec the X11-enabled one
 
 This allows us to have dbus-launch without the X11 dependency, in separate
 packages.
@@ -32,5 +32,5 @@ index f1a5b970..89360bea 100644
      {      
  #ifndef DBUS_BUILD_X11
 -- 
-2.21.0
+2.34.0
 

@@ -1,5 +1,16 @@
---- dbus-1.9.10/bus/main.c.org	2015-03-01 15:21:04.175051841 -0500
-+++ dbus-1.9.10/bus/main.c	2015-03-01 15:28:22.499572030 -0500
+From 1997b43f97544e509033c6d3b36faf1b74334892 Mon Sep 17 00:00:00 2001
+From: Francisco Boni <boboniboni@gmail.com>
+Date: Mon, 6 Dec 2021 10:56:22 -0300
+Subject: [PATCH 2/4] malloc trim
+
+---
+ bus/main.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/bus/main.c b/bus/main.c
+index 5f756d5c..eb63cb7f 100644
+--- a/bus/main.c
++++ b/bus/main.c
 @@ -29,6 +29,7 @@
  #include <stdio.h>
  #include <stdlib.h>
@@ -8,10 +19,10 @@
  #ifdef HAVE_SIGNAL_H
  #include <signal.h>
  #endif
-@@ -644,6 +645,13 @@
- #endif /* DBUS_UNIX */
+@@ -747,6 +748,13 @@ main (int argc, char **argv)
  
    _dbus_verbose ("We are on D-Bus...\n");
+   _dbus_daemon_report_ready ();
 +  /*
 +   * during init we may have allocated and then freed memory, which
 +   * the C library will buffer for us. This is a good place to really
@@ -22,3 +33,6 @@
    _dbus_loop_run (bus_context_get_loop (context));
  
    bus_context_shutdown (context);
+-- 
+2.34.0
+

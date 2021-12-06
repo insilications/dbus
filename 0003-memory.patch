@@ -1,0 +1,36 @@
+From 62f1447a87a4bf3deeaabd06ad5de9dd2412fa8a Mon Sep 17 00:00:00 2001
+From: Francisco Boni <boboniboni@gmail.com>
+Date: Mon, 6 Dec 2021 10:56:54 -0300
+Subject: [PATCH 3/4] memory
+
+---
+ dbus/dbus-mainloop.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/dbus/dbus-mainloop.c b/dbus/dbus-mainloop.c
+index c4b7151b..25ca49c3 100644
+--- a/dbus/dbus-mainloop.c
++++ b/dbus/dbus-mainloop.c
+@@ -23,6 +23,7 @@
+  */
+ 
+ #include <config.h>
++#include <malloc.h>
+ #include "dbus-mainloop.h"
+ 
+ #ifndef DOXYGEN_SHOULD_SKIP_THIS
+@@ -884,8 +885,10 @@ _dbus_loop_run (DBusLoop *loop)
+   _dbus_verbose ("Running main loop, depth %d -> %d\n",
+                  loop->depth - 1, loop->depth);
+   
+-  while (loop->depth != our_exit_depth)
++  while (loop->depth != our_exit_depth) {
++    malloc_trim(0);
+     _dbus_loop_iterate (loop, TRUE);
++  }
+ 
+   _dbus_loop_unref (loop);
+ }
+-- 
+2.34.0
+

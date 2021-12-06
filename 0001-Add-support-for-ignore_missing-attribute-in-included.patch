@@ -1,7 +1,7 @@
-From 28333ea70e789735105020c695b75702cbd467d3 Mon Sep 17 00:00:00 2001
+From 7d5c6428febe785c908834550a65df1a43d4cd7b Mon Sep 17 00:00:00 2001
 From: Ikey Doherty <michael.i.doherty@intel.com>
 Date: Mon, 24 Apr 2017 16:31:46 +0100
-Subject: [PATCH] Add support for ignore_missing attribute in includedir
+Subject: [PATCH 1/4] Add support for ignore_missing attribute in includedir
 
 Rebased variant of the original patch by Dimitri John Ledkov, to support
 dbus 1.10.18 and merging the previous stateless directories patch into
@@ -13,17 +13,17 @@ by default.
 
 Signed-off-by: Ikey Doherty <michael.i.doherty@intel.com>
 ---
- bus/config-parser.c | 56 ++++++++++++++++++++++++++++++++++++++++++-----------
+ bus/config-parser.c | 56 ++++++++++++++++++++++++++++++++++++---------
  bus/session.conf.in |  4 ++--
  bus/system.conf.in  |  2 +-
  doc/busconfig.dtd   |  2 ++
  4 files changed, 50 insertions(+), 14 deletions(-)
 
 diff --git a/bus/config-parser.c b/bus/config-parser.c
-index d9f6042..a735c65 100644
+index f9b70477..e4b0fe8f 100644
 --- a/bus/config-parser.c
 +++ b/bus/config-parser.c
-@@ -819,15 +819,41 @@ start_busconfig_child (BusConfigParser   *parser,
+@@ -860,15 +860,41 @@ start_busconfig_child (BusConfigParser   *parser,
      }
    else if (element_type == ELEMENT_INCLUDEDIR)
      {
@@ -69,7 +69,7 @@ index d9f6042..a735c65 100644
        return TRUE;
      }
    else if (element_type == ELEMENT_STANDARD_SESSION_SERVICEDIRS)
-@@ -2246,6 +2272,7 @@ servicehelper_path (BusConfigParser   *parser,
+@@ -2459,6 +2485,7 @@ servicehelper_path (BusConfigParser   *parser,
  static dbus_bool_t
  include_dir (BusConfigParser   *parser,
               const DBusString  *dirname,
@@ -77,7 +77,7 @@ index d9f6042..a735c65 100644
               DBusError         *error)
  {
    DBusString filename;
-@@ -2262,20 +2289,26 @@ include_dir (BusConfigParser   *parser,
+@@ -2475,20 +2502,26 @@ include_dir (BusConfigParser   *parser,
  
    retval = FALSE;
    
@@ -110,7 +110,7 @@ index d9f6042..a735c65 100644
    while (_dbus_directory_get_next_file (dir, &filename, &tmp_error))
      {
        DBusString full_path;
-@@ -2517,7 +2550,8 @@ bus_config_parser_content (BusConfigParser   *parser,
+@@ -2723,7 +2756,8 @@ bus_config_parser_content (BusConfigParser   *parser,
              goto nomem;
            }
          
@@ -121,7 +121,7 @@ index d9f6042..a735c65 100644
              _dbus_string_free (&full_path);
              return FALSE;
 diff --git a/bus/session.conf.in b/bus/session.conf.in
-index affa7f1..497433b 100644
+index ace073c9..61b63581 100644
 --- a/bus/session.conf.in
 +++ b/bus/session.conf.in
 @@ -40,9 +40,9 @@
@@ -137,10 +137,10 @@ index affa7f1..497433b 100644
    <!-- This is included last so local configuration can override what's 
         in this standard file -->
 diff --git a/bus/system.conf.in b/bus/system.conf.in
-index 014f67e..f00deda 100644
+index 7c79a1ae..2bab3563 100644
 --- a/bus/system.conf.in
 +++ b/bus/system.conf.in
-@@ -104,7 +104,7 @@
+@@ -135,7 +135,7 @@
         holes in the above policy for specific services. -->
    <includedir>system.d</includedir>
  
@@ -150,7 +150,7 @@ index 014f67e..f00deda 100644
    <!-- This is included last so local configuration can override what's 
         in this standard file -->
 diff --git a/doc/busconfig.dtd b/doc/busconfig.dtd
-index 8c5ac33..9e25cc3 100644
+index 8c5ac334..9e25cc3a 100644
 --- a/doc/busconfig.dtd
 +++ b/doc/busconfig.dtd
 @@ -17,6 +17,8 @@
@@ -163,5 +163,5 @@ index 8c5ac33..9e25cc3 100644
  <!ELEMENT servicehelper (#PCDATA)>
  <!ELEMENT auth (#PCDATA)>
 -- 
-2.12.2
+2.34.0
 
