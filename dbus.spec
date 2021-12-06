@@ -5,12 +5,19 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 508
+Release  : 509
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
 Group    : Development/Tools
 License  : AFL-2.1 GPL-2.0+
+Requires: dbus-autostart = %{version}-%{release}
+Requires: dbus-bin = %{version}-%{release}
+Requires: dbus-config = %{version}-%{release}
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-lib = %{version}-%{release}
+Requires: dbus-libexec = %{version}-%{release}
+Requires: dbus-services = %{version}-%{release}
 BuildRequires : dbus-glib
 BuildRequires : dbus-python
 BuildRequires : dbus-python-dev
@@ -79,6 +86,128 @@ Sections in this file describe:
 - options to the configure script
 - ABI stability policy
 
+%package autostart
+Summary: autostart components for the dbus package.
+Group: Default
+
+%description autostart
+autostart components for the dbus package.
+
+
+%package bin
+Summary: bin components for the dbus package.
+Group: Binaries
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-libexec = %{version}-%{release}
+Requires: dbus-config = %{version}-%{release}
+Requires: dbus-services = %{version}-%{release}
+
+%description bin
+bin components for the dbus package.
+
+
+%package config
+Summary: config components for the dbus package.
+Group: Default
+
+%description config
+config components for the dbus package.
+
+
+%package data
+Summary: data components for the dbus package.
+Group: Data
+
+%description data
+data components for the dbus package.
+
+
+%package dev
+Summary: dev components for the dbus package.
+Group: Development
+Requires: dbus-lib = %{version}-%{release}
+Requires: dbus-bin = %{version}-%{release}
+Requires: dbus-data = %{version}-%{release}
+Provides: dbus-devel = %{version}-%{release}
+Requires: dbus = %{version}-%{release}
+
+%description dev
+dev components for the dbus package.
+
+
+%package dev32
+Summary: dev32 components for the dbus package.
+Group: Default
+Requires: dbus-lib32 = %{version}-%{release}
+Requires: dbus-bin = %{version}-%{release}
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-dev = %{version}-%{release}
+
+%description dev32
+dev32 components for the dbus package.
+
+
+%package doc
+Summary: doc components for the dbus package.
+Group: Documentation
+
+%description doc
+doc components for the dbus package.
+
+
+%package extras
+Summary: extras components for the dbus package.
+Group: Default
+
+%description extras
+extras components for the dbus package.
+
+
+%package lib
+Summary: lib components for the dbus package.
+Group: Libraries
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-libexec = %{version}-%{release}
+
+%description lib
+lib components for the dbus package.
+
+
+%package lib32
+Summary: lib32 components for the dbus package.
+Group: Default
+Requires: dbus-data = %{version}-%{release}
+
+%description lib32
+lib32 components for the dbus package.
+
+
+%package libexec
+Summary: libexec components for the dbus package.
+Group: Default
+Requires: dbus-config = %{version}-%{release}
+
+%description libexec
+libexec components for the dbus package.
+
+
+%package services
+Summary: services components for the dbus package.
+Group: Systemd services
+
+%description services
+services components for the dbus package.
+
+
+%package staticdev
+Summary: staticdev components for the dbus package.
+Group: Default
+Requires: dbus-dev = %{version}-%{release}
+
+%description staticdev
+staticdev components for the dbus package.
+
+
 %prep
 %setup -q -n dbus
 cd %{_builddir}/dbus
@@ -99,7 +228,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1638801199
+export SOURCE_DATE_EPOCH=1638801522
 export GCC_IGNORE_WERROR=1
 ## altflags1 content
 unset ASFLAGS
@@ -140,6 +269,8 @@ export CCACHE_BASEDIR=/builddir/build/BUILD
 #export CCACHE_LOGFILE=/var/tmp/ccache/cache.debug
 #export CCACHE_DEBUG=true
 #export CCACHE_NODIRECT=true
+#
+export PKG_CONFIG_PATH="/usr/lib64/pkgconfig:/usr/share/pkgconfig"
 #
 export LD_LIBRARY_PATH="/usr/nvidia/lib64:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/haswell/pulseaudio:/usr/lib64/haswell/alsa-lib:/usr/lib64/haswell/gstreamer-1.0:/usr/lib64/haswell/pipewire-0.3:/usr/lib64/haswell/spa-0.2:/usr/lib64/dri:/usr/lib64/chromium:/usr/lib64:/usr/lib64/pulseaudio:/usr/lib64/alsa-lib:/usr/lib64/gstreamer-1.0:/usr/lib64/pipewire-0.3:/usr/lib64/spa-0.2:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
 #
@@ -270,6 +401,8 @@ export CCACHE_BASEDIR=/builddir/build/BUILD
 #export CCACHE_DEBUG=true
 #export CCACHE_NODIRECT=true
 #
+export PKG_CONFIG_PATH="/usr/lib64/pkgconfig:/usr/share/pkgconfig"
+#
 export LD_LIBRARY_PATH="/usr/nvidia/lib64:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/haswell/pulseaudio:/usr/lib64/haswell/alsa-lib:/usr/lib64/haswell/gstreamer-1.0:/usr/lib64/haswell/pipewire-0.3:/usr/lib64/haswell/spa-0.2:/usr/lib64/dri:/usr/lib64/chromium:/usr/lib64:/usr/lib64/pulseaudio:/usr/lib64/alsa-lib:/usr/lib64/gstreamer-1.0:/usr/lib64/pipewire-0.3:/usr/lib64/spa-0.2:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
 #
 export LIBRARY_PATH="/usr/nvidia/lib64:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/haswell/pulseaudio:/usr/lib64/haswell/alsa-lib:/usr/lib64/haswell/gstreamer-1.0:/usr/lib64/haswell/pipewire-0.3:/usr/lib64/haswell/spa-0.2:/usr/lib64/dri:/usr/lib64/chromium:/usr/lib64:/usr/lib64/pulseaudio:/usr/lib64/alsa-lib:/usr/lib64/gstreamer-1.0:/usr/lib64/pipewire-0.3:/usr/lib64/spa-0.2:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
@@ -322,7 +455,7 @@ make  %{?_smp_mflags}    V=1 VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1638801199
+export SOURCE_DATE_EPOCH=1638801522
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
@@ -359,3 +492,103 @@ find %{buildroot}/usr/lib{32,64}/pkgconfig -type f -name '*.pc' -exec sed -i 's/
 
 %files
 %defattr(-,root,root,-)
+
+%files autostart
+%defattr(-,root,root,-)
+/usr/lib/systemd/system/multi-user.target.wants/dbus.service
+/usr/lib/systemd/system/sockets.target.wants/dbus.socket
+
+%files bin
+%defattr(-,root,root,-)
+/usr/bin/dbus-cleanup-sockets
+/usr/bin/dbus-daemon
+/usr/bin/dbus-launch
+/usr/bin/dbus-monitor
+/usr/bin/dbus-run-session
+/usr/bin/dbus-send
+/usr/bin/dbus-test-tool
+/usr/bin/dbus-update-activation-environment
+/usr/bin/dbus-uuidgen
+
+%files config
+%defattr(-,root,root,-)
+/usr/lib/tmpfiles.d/dbus.conf
+
+%files data
+%defattr(-,root,root,-)
+/usr/share/dbus-1/session.conf
+/usr/share/dbus-1/system.conf
+/usr/share/xml/dbus-1/busconfig.dtd
+/usr/share/xml/dbus-1/introspect.dtd
+
+%files dev
+%defattr(-,root,root,-)
+/usr/include/dbus-1.0/dbus/dbus-address.h
+/usr/include/dbus-1.0/dbus/dbus-bus.h
+/usr/include/dbus-1.0/dbus/dbus-connection.h
+/usr/include/dbus-1.0/dbus/dbus-errors.h
+/usr/include/dbus-1.0/dbus/dbus-macros.h
+/usr/include/dbus-1.0/dbus/dbus-memory.h
+/usr/include/dbus-1.0/dbus/dbus-message.h
+/usr/include/dbus-1.0/dbus/dbus-misc.h
+/usr/include/dbus-1.0/dbus/dbus-pending-call.h
+/usr/include/dbus-1.0/dbus/dbus-protocol.h
+/usr/include/dbus-1.0/dbus/dbus-server.h
+/usr/include/dbus-1.0/dbus/dbus-shared.h
+/usr/include/dbus-1.0/dbus/dbus-signature.h
+/usr/include/dbus-1.0/dbus/dbus-syntax.h
+/usr/include/dbus-1.0/dbus/dbus-threads.h
+/usr/include/dbus-1.0/dbus/dbus-types.h
+/usr/include/dbus-1.0/dbus/dbus.h
+/usr/lib32/dbus-1.0/include/dbus/dbus-arch-deps.h
+/usr/lib64/cmake/DBus1/DBus1Config.cmake
+/usr/lib64/cmake/DBus1/DBus1ConfigVersion.cmake
+/usr/lib64/dbus-1.0/include/dbus/dbus-arch-deps.h
+/usr/lib64/libdbus-1.la
+/usr/lib64/pkgconfig/dbus-1.pc
+
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/cmake/DBus1/DBus1Config.cmake
+/usr/lib32/cmake/DBus1/DBus1ConfigVersion.cmake
+/usr/lib32/libdbus-1.la
+/usr/lib32/pkgconfig/32dbus-1.pc
+/usr/lib32/pkgconfig/dbus-1.pc
+
+%files doc
+%defattr(0644,root,root,0755)
+%doc /usr/share/doc/dbus/*
+
+%files extras
+%defattr(-,root,root,-)
+/usr/bin/dbus-launch.x11
+
+%files lib
+%defattr(-,root,root,-)
+/usr/lib64/libdbus-1.so
+/usr/lib64/libdbus-1.so.3
+/usr/lib64/libdbus-1.so.3.29.0
+
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/libdbus-1.so
+/usr/lib32/libdbus-1.so.3
+/usr/lib32/libdbus-1.so.3.29.0
+
+%files libexec
+%defattr(-,root,root,-)
+%attr(4750,root,messagebus) /usr/libexec/dbus-daemon-launch-helper
+
+%files services
+%defattr(-,root,root,-)
+%exclude /usr/lib/systemd/system/multi-user.target.wants/dbus.service
+%exclude /usr/lib/systemd/system/sockets.target.wants/dbus.socket
+/usr/lib/systemd/system/dbus.service
+/usr/lib/systemd/system/dbus.socket
+/usr/lib/systemd/user/dbus.service
+/usr/lib/systemd/user/dbus.socket
+/usr/lib/systemd/user/sockets.target.wants/dbus.socket
+
+%files staticdev
+%defattr(-,root,root,-)
+/usr/lib64/libdbus-1.a
