@@ -1,1 +1,4 @@
+pushd ../build-special/
+%make_install_special
 install -m755 tools/.libs/dbus-launch %{buildroot}/usr/bin/dbus-launch.x11
+popd
