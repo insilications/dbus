@@ -3,8 +3,10 @@
 --disable-installed-tests
 --disable-stats
 --enable-debug=no
+--enable-x11-autolaunch
 --enable-static
 --disable-xml-docs
+--localstatedir=/var
 --runstatedir=/run
 --with-systemdunitdir=/usr/lib/systemd/system
 --enable-systemd
@@ -13,5 +15,5 @@
 --with-system-socket=/run/dbus/system_bus_socket
 --with-system-pid-file=/run/dbus/pid
 --with-console-auth-dir=/run/console/
---sysconfdir=/etc2
+--sysconfdir=/usr/share
 --with-x
