@@ -1,5 +1,9 @@
+--disable-tests
+--disable-asserts
+--disable-installed-tests
+--disable-stats
 --enable-debug=no
---disable-static
+--enable-static
 --disable-xml-docs
 --localstatedir=/var
 --runstatedir=/run
@@ -10,6 +14,6 @@
 --with-system-socket=/run/dbus/system_bus_socket
 --with-system-pid-file=/run/dbus/pid
 --with-console-auth-dir=/run/console/
---sysconfdir=/usr/share
+--sysconfdir=/etc2
 --with-x
---enable-tests
+--enable-qt-help=no

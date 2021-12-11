@@ -1,9 +1,4 @@
---disable-tests
---disable-asserts
---disable-installed-tests
---disable-stats
 --enable-debug=no
---enable-static
 --disable-xml-docs
 --localstatedir=/var
 --runstatedir=/run
@@ -16,4 +11,6 @@
 --with-console-auth-dir=/run/console/
 --sysconfdir=/etc2
 --with-x
+--enable-tests
+--enable-installed-tests
 --enable-qt-help=no
