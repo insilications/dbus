@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 545
+Release  : 548
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
@@ -91,6 +91,7 @@ BuildRequires : zstd-staticdev
 Patch1: 0001-Add-support-for-ignore_missing-attribute-in-included.patch
 Patch2: 0002-malloc-trim.patch
 Patch3: 0003-memory.patch
+Patch4: 0004-DBUS_TEST_USER-to-boni.patch
 
 %description
 Sections in this file describe:
@@ -106,6 +107,7 @@ cd %{_builddir}/dbus
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 unset http_proxy
@@ -113,7 +115,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639261161
+export SOURCE_DATE_EPOCH=1639262391
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -233,7 +235,7 @@ export LIBS="${LIBS_GENERATE}"
 -DTEST_LISTEN:STRING=unix:path=/run/user/1000/bus \
 -DDBUS_TEST_USER=boni \
 -DENABLE_VERBOSE_CONFIG:BOOL=ON \
--DCMAKE_INSTALL_SYSCONFDIR=/etc
+-DCMAKE_INSTALL_FULL_SYSCONFDIR=/usr/share
 make  %{?_smp_mflags}    V=1 VERBOSE=1
 
 ## profile_payload start
@@ -333,7 +335,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639261161
+export SOURCE_DATE_EPOCH=1639262391
 rm -rf %{buildroot}
 pushd clr-build32
 %make_install32
