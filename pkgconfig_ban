@@ -1,10 +1,16 @@
 #
-# This file contains pkgconfig build requirements that get picked up but are 
+# This file contains pkgconfig build requirements that get picked up but are
 # undesirable. One name per line, no whitespace.
 #
-libapparmor
 32libapparmor
-32valgrind
 32libselinux
-libselinux
+32libsystemd-daemon
+32libsystemd-journal
+32libsystemd-login
 32systemd
+32valgrind
+libapparmor
+libselinux
+libsystemd-daemon
+libsystemd-journal
+libsystemd-login

@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 529
+Release  : 537
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
@@ -103,9 +103,6 @@ cd %{_builddir}/dbus
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-pushd %{_builddir}
-cp -a %{_builddir}/dbus build32
-popd
 
 %build
 unset http_proxy
@@ -113,7 +110,9 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639232943
+export SOURCE_DATE_EPOCH=1639238891
+mkdir -p clr-build
+pushd clr-build
 export GCC_IGNORE_WERROR=1
 ## altflags_pgo content
 ## pgo generate
@@ -198,8 +197,6 @@ export LIBVA_DRIVERS_PATH=/usr/lib64/dri
 export GTK_RC_FILES=/etc/gtk/gtkrc
 export FONTCONFIG_PATH=/usr/share/defaults/fonts
 ## altflags_pgo end
-sd -r '\s--dirty\s' ' ' .
-sd -r 'git describe' 'git describe --abbrev=0' .
 if [ ! -f statuspgo ]; then
 echo PGO Phase 1
 export CFLAGS="${CFLAGS_GENERATE}"
@@ -209,35 +206,31 @@ export FCFLAGS="${FCFLAGS_GENERATE}"
 export LDFLAGS="${LDFLAGS_GENERATE}"
 export ASMFLAGS="${ASMFLAGS_GENERATE}"
 export LIBS="${LIBS_GENERATE}"
-%autogen  --enable-debug=no \
---disable-xml-docs \
---localstatedir=/var \
---runstatedir=/run \
---with-systemdunitdir=/usr/lib/systemd/system \
---enable-systemd \
---enable-user-session \
---enable-epoll \
---with-system-socket=/run/dbus/system_bus_socket \
---with-system-pid-file=/run/dbus/pid \
---with-console-auth-dir=/run/console/ \
---sysconfdir=/etc2 \
---with-x \
---enable-tests \
---enable-installed-tests \
---enable-qt-help=no
+%cmake ..   -DENABLE_QT_HELP:STRING=OFF \
+-DDBUS_ENABLE_DOXYGEN_DOCS:BOOL=OFF \
+-DDBUS_ENABLE_XML_DOCS:BOOL=OFF \
+-DENABLE_WERROR:BOOL=OFF \
+-DBUILD_SHARED_LIBS=ON \
+-DENABLE_USER_SESSION:BOOL=ON \
+-DENABLE_SYSTEMD:STRING=AUTO \
+-DWITH_SYSTEMD_SYSTEMUNITDIR:STRING=/usr/lib/systemd/system \
+-DWITH_SYSTEMD_USERUNITDIR:STRING=/usr/lib/systemd/user \
+-DDBUS_INSTALL_SYSTEM_LIBS:BOOL=ON \
+-DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS:STRING=unix:path=/var/run/dbus/system_bus_socket \
+-DDBUS_BUILD_X11:BOOL=ON \
+-DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
+-DDBUS_BUILD_TESTS:BOOL=ON
 make  %{?_smp_mflags}    V=1 VERBOSE=1
 
 ## profile_payload start
 unset LD_LIBRARY_PATH
 unset LIBRARY_PATH
-# export LD_LIBRARY_PATH="/builddir/build/BUILD/dbus/dbus/.libs:/usr/nvidia/lib64:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/haswell/pulseaudio:/usr/lib64/haswell/alsa-lib:/usr/lib64/haswell/gstreamer-1.0:/usr/lib64/haswell/pipewire-0.3:/usr/lib64/haswell/spa-0.2:/usr/lib64/dri:/usr/lib64/chromium:/usr/lib64:/usr/lib64/pulseaudio:/usr/lib64/alsa-lib:/usr/lib64/gstreamer-1.0:/usr/lib64/pipewire-0.3:/usr/lib64/spa-0.2:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
-# export LIBRARY_PATH="/builddir/build/BUILD/dbus/dbus/.libs:/usr/nvidia/lib64:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/haswell/pulseaudio:/usr/lib64/haswell/alsa-lib:/usr/lib64/haswell/gstreamer-1.0:/usr/lib64/haswell/pipewire-0.3:/usr/lib64/haswell/spa-0.2:/usr/lib64/dri:/usr/lib64/chromium:/usr/lib64:/usr/lib64/pulseaudio:/usr/lib64/alsa-lib:/usr/lib64/gstreamer-1.0:/usr/lib64/pipewire-0.3:/usr/lib64/spa-0.2:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
-# export DBUS_TEST_DATA=/builddir/build/BUILD/dbus/test/data
-make -j1 check V=1 VERBOSE=1 || :
+# make -j1 check V=1 VERBOSE=1 || :
+ctest --parallel 1 --verbose --progress || :
 export LD_LIBRARY_PATH="/usr/nvidia/lib64:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/haswell/pulseaudio:/usr/lib64/haswell/alsa-lib:/usr/lib64/haswell/gstreamer-1.0:/usr/lib64/haswell/pipewire-0.3:/usr/lib64/haswell/spa-0.2:/usr/lib64/dri:/usr/lib64/chromium:/usr/lib64:/usr/lib64/pulseaudio:/usr/lib64/alsa-lib:/usr/lib64/gstreamer-1.0:/usr/lib64/pipewire-0.3:/usr/lib64/spa-0.2:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
 export LIBRARY_PATH="/usr/nvidia/lib64:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/haswell/pulseaudio:/usr/lib64/haswell/alsa-lib:/usr/lib64/haswell/gstreamer-1.0:/usr/lib64/haswell/pipewire-0.3:/usr/lib64/haswell/spa-0.2:/usr/lib64/dri:/usr/lib64/chromium:/usr/lib64:/usr/lib64/pulseaudio:/usr/lib64/alsa-lib:/usr/lib64/gstreamer-1.0:/usr/lib64/pipewire-0.3:/usr/lib64/spa-0.2:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
 ## profile_payload end
-make clean || :
+find . -type f,l -not -name '*.gcno' -not -name 'statuspgo*' -delete -print
 echo USED > statuspgo
 fi
 if [ -f statuspgo ]; then
@@ -249,29 +242,27 @@ export FCFLAGS="${FCFLAGS_USE}"
 export LDFLAGS="${LDFLAGS_USE}"
 export ASMFLAGS="${ASMFLAGS_USE}"
 export LIBS="${LIBS_USE}"
-%autogen --disable-tests \
---disable-asserts \
---disable-installed-tests \
---disable-stats \
---enable-debug=no \
---enable-static \
---disable-xml-docs \
---localstatedir=/var \
---runstatedir=/run \
---with-systemdunitdir=/usr/lib/systemd/system \
---enable-systemd \
---enable-user-session \
---enable-epoll \
---with-system-socket=/run/dbus/system_bus_socket \
---with-system-pid-file=/run/dbus/pid \
---with-console-auth-dir=/run/console/ \
---sysconfdir=/etc2 \
---with-x \
---enable-qt-help=no
+%cmake .. -DENABLE_QT_HELP:STRING=OFF \
+-DDBUS_ENABLE_DOXYGEN_DOCS:BOOL=OFF \
+-DDBUS_ENABLE_XML_DOCS:BOOL=OFF \
+-DENABLE_WERROR:BOOL=OFF \
+-DBUILD_SHARED_LIBS=ON \
+-DENABLE_USER_SESSION:BOOL=ON \
+-DENABLE_SYSTEMD:STRING=AUTO \
+-DWITH_SYSTEMD_SYSTEMUNITDIR:STRING=/usr/lib/systemd/system \
+-DWITH_SYSTEMD_USERUNITDIR:STRING=/usr/lib/systemd/user \
+-DDBUS_INSTALL_SYSTEM_LIBS:BOOL=ON \
+-DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS:STRING=unix:path=/var/run/dbus/system_bus_socket \
+-DDBUS_BUILD_X11:BOOL=ON \
+-DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
+-DDBUS_BUILD_TESTS:BOOL=OFF \
+-DDBUS_ENABLE_STATS:BOOL=OFF \
+-DDBUS_DISABLE_ASSERT:BOOL=OFF
 make  %{?_smp_mflags}    V=1 VERBOSE=1
 fi
-
-pushd ../build32/
+popd
+mkdir -p clr-build32
+pushd clr-build32
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -294,29 +285,30 @@ export FCFLAGS="-O2 -ffat-lto-objects -fuse-linker-plugin -fvisibility-inlines-h
 export FFLAGS="-O2 -ffat-lto-objects -fuse-linker-plugin -fvisibility-inlines-hidden -pipe -fPIC -march=native -mtune=native -m32 -mstackrealign"
 export CFFLAGS="-O2 -ffat-lto-objects -fuse-linker-plugin -fvisibility-inlines-hidden -pipe -fPIC -march=native -mtune=native -m32 -mstackrealign"
 export LDFLAGS="-O2 -ffat-lto-objects -fuse-linker-plugin -pipe -fPIC -march=native -mtune=native -m32 -mstackrealign"
-%autogen  --disable-static \
---disable-xml-docs \
---localstatedir=/var \
---runstatedir=/run \
---with-systemdunitdir=/usr/lib/systemd/system \
---enable-systemd \
---enable-user-session \
---enable-epoll \
---with-system-socket=/run/dbus/system_bus_socket \
---with-system-pid-file=/run/dbus/pid \
---with-console-auth-dir=/run/console/ \
---sysconfdir=/usr/share \
---without-x \
---without-dbus-glib \
---disable-tests \
---enable-qt-help=no --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
+%cmake .. -DLIB_INSTALL_DIR:PATH=/usr/lib32 -DCMAKE_INSTALL_LIBDIR=/usr/lib32 -DLIB_SUFFIX=32   -DENABLE_QT_HELP:STRING=OFF \
+-DDBUS_ENABLE_DOXYGEN_DOCS:BOOL=OFF \
+-DDBUS_ENABLE_XML_DOCS:BOOL=OFF \
+-DENABLE_WERROR:BOOL=OFF \
+-DBUILD_SHARED_LIBS=ON \
+-DENABLE_USER_SESSION:BOOL=ON \
+-DENABLE_SYSTEMD:STRING=AUTO \
+-DWITH_SYSTEMD_SYSTEMUNITDIR:STRING=/usr/lib/systemd/system \
+-DWITH_SYSTEMD_USERUNITDIR:STRING=/usr/lib/systemd/user \
+-DDBUS_INSTALL_SYSTEM_LIBS:BOOL=ON \
+-DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS:STRING=unix:path=/var/run/dbus/system_bus_socket \
+-DDBUS_BUILD_X11:BOOL=OFF \
+-DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
+-DDBUS_BUILD_TESTS:BOOL=OFF \
+-DDBUS_ENABLE_STATS:BOOL=OFF \
+-DDBUS_DISABLE_ASSERT:BOOL=OFF
 make  %{?_smp_mflags}    V=1 VERBOSE=1
+unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639232943
+export SOURCE_DATE_EPOCH=1639238891
 rm -rf %{buildroot}
-pushd ../build32/
+pushd clr-build32
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
 then
@@ -331,15 +323,9 @@ for i in *.pc ; do ln -s $i 32$i ; done
 popd
 fi
 popd
+pushd clr-build
 %make_install
-## install_append content
-rm -rf %{buildroot}/etc2
-
-sed -i 's/etc2/etc/g' %{buildroot}/usr/share/dbus-1/system.conf
-sed -i 's/etc2/etc/g' %{buildroot}/usr/share/dbus-1/session.conf
-
-find %{buildroot}/usr/lib{32,64}/pkgconfig -type f -name '*.pc' -exec sed -i 's/etc2/etc/g' {} \;
-## install_append end
+popd
 
 %files
 %defattr(-,root,root,-)
