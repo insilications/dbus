@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 526
+Release  : 527
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
@@ -92,9 +92,9 @@ BuildRequires : zstd-staticdev
 # Suppress stripping binaries
 %define __strip /bin/true
 %define debug_package %{nil}
-Patch1: 0002-malloc-trim.patch
-Patch2: 0003-memory.patch
-Patch3: 0004-Make-the-non-X11-dbus-launch-exec-the-X11-enabled-on.patch
+Patch1: 0001-Add-support-for-ignore_missing-attribute-in-included.patch
+Patch2: 0002-malloc-trim.patch
+Patch3: 0003-memory.patch
 
 %description
 Sections in this file describe:
@@ -234,7 +234,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639229071
+export SOURCE_DATE_EPOCH=1639231976
 export GCC_IGNORE_WERROR=1
 ## altflags1 content
 ## altflags1
@@ -330,7 +330,7 @@ sd -r 'git describe' 'git describe --abbrev=0' .
 --with-system-socket=/run/dbus/system_bus_socket \
 --with-system-pid-file=/run/dbus/pid \
 --with-console-auth-dir=/run/console/ \
---sysconfdir=/usr/share \
+--sysconfdir=/etc2 \
 --with-x \
 --enable-qt-help=no
 make  %{?_smp_mflags}    V=1 VERBOSE=1
@@ -378,7 +378,7 @@ make  %{?_smp_mflags}    V=1 VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639229071
+export SOURCE_DATE_EPOCH=1639231976
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
@@ -396,6 +396,14 @@ popd
 fi
 popd
 %make_install
+## install_append content
+rm -rf %{buildroot}/etc2
+
+sed -i 's/etc2/etc/g' %{buildroot}/usr/share/dbus-1/system.conf
+sed -i 's/etc2/etc/g' %{buildroot}/usr/share/dbus-1/session.conf
+
+find %{buildroot}/usr/lib{32,64}/pkgconfig -type f -name '*.pc' -exec sed -i 's/etc2/etc/g' {} \;
+## install_append end
 
 %files
 %defattr(-,root,root,-)
