@@ -1,3 +1,4 @@
+--enable-debug=no
 --disable-static
 --disable-xml-docs
 --localstatedir=/var
@@ -10,6 +11,5 @@
 --with-system-pid-file=/run/dbus/pid
 --with-console-auth-dir=/run/console/
 --sysconfdir=/usr/share
---without-x
---without-dbus-glib
---disable-tests
+--with-x
+--enable-tests

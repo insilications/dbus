@@ -10,6 +10,7 @@ expat-dev
 expat-dev32
 expat-staticdev
 expat-staticdev32
+freetype-dev
 gcc-dev32
 gcc-libgcc32
 gcc-libstdc++32
@@ -19,14 +20,19 @@ glibc-libc32
 glib-dev
 glib-dev32
 gnupg
+graphite-dev
+harfbuzz-dev
 libcap-dev
 libcap-dev32
 libcap-staticdev
+libpng-dev
 libxml2-dev
 libxslt-bin
 lz4-dev
 lz4-dev32
 lz4-staticdev
+pcre2-dev
+pcre-dev
 perl(XML::Parser)
 pkg-config
 python-dbusmock
