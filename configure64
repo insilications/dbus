@@ -16,3 +16,4 @@
 --with-console-auth-dir=/run/console/
 --sysconfdir=/usr/share
 --with-x
+--enable-qt-help=no

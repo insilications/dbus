@@ -13,3 +13,4 @@
 --without-x
 --without-dbus-glib
 --disable-tests
+--enable-qt-help=no

@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 524
+Release  : 525
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
@@ -21,6 +21,7 @@ BuildRequires : expat-dev
 BuildRequires : expat-dev32
 BuildRequires : expat-staticdev
 BuildRequires : expat-staticdev32
+BuildRequires : freetype-dev
 BuildRequires : gcc
 BuildRequires : gcc-dev
 BuildRequires : gcc-dev32
@@ -36,16 +37,21 @@ BuildRequires : glib-dev32
 BuildRequires : glibc-dev32
 BuildRequires : glibc-libc32
 BuildRequires : gnupg
+BuildRequires : graphite-dev
+BuildRequires : harfbuzz-dev
 BuildRequires : libcap-dev
 BuildRequires : libcap-dev32
 BuildRequires : libcap-staticdev
 BuildRequires : libgcc1
+BuildRequires : libpng-dev
 BuildRequires : libstdc++
 BuildRequires : libxml2-dev
 BuildRequires : libxslt-bin
 BuildRequires : lz4-dev
 BuildRequires : lz4-dev32
 BuildRequires : lz4-staticdev
+BuildRequires : pcre-dev
+BuildRequires : pcre2-dev
 BuildRequires : perl(XML::Parser)
 BuildRequires : pkg-config
 BuildRequires : pkgconfig(32expat)
@@ -107,7 +113,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639228730
+export SOURCE_DATE_EPOCH=1639228894
 export GCC_IGNORE_WERROR=1
 ## altflags1 content
 ## altflags1
@@ -249,7 +255,7 @@ make  %{?_smp_mflags}    V=1 VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639228730
+export SOURCE_DATE_EPOCH=1639228894
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
