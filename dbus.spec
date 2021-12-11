@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 541
+Release  : 542
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
@@ -110,7 +110,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639255728
+export SOURCE_DATE_EPOCH=1639255882
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -223,7 +223,7 @@ export LIBS="${LIBS_GENERATE}"
 -DDBUS_BUILD_X11:BOOL=ON \
 -DDBUS_SYSTEM_PID_FILE:STRING=/run/dbus/pid \
 -DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
--DDBUS_ENABLE_VERBOSE_MODE:BOOL=OFF \
+-DDBUS_ENABLE_VERBOSE_MODE:BOOL=ON \
 -DDBUS_BUILD_TESTS:BOOL=ON \
 -DTEST_SOCKET_DIR:STRING=/run/user/1000/ \
 -DTEST_LISTEN:STRING=unix:path=/run/user/1000/bus \
@@ -269,7 +269,7 @@ export LIBS="${LIBS_USE}"
 -DDBUS_BUILD_X11:BOOL=ON \
 -DDBUS_SYSTEM_PID_FILE:STRING=/run/dbus/pid \
 -DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
--DDBUS_ENABLE_VERBOSE_MODE:BOOL=OFF \
+-DDBUS_ENABLE_VERBOSE_MODE:BOOL=ON \
 -DDBUS_BUILD_TESTS:BOOL=OFF \
 -DDBUS_ENABLE_STATS:BOOL=OFF \
 -DDBUS_DISABLE_ASSERT:BOOL=ON \
@@ -326,7 +326,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639255728
+export SOURCE_DATE_EPOCH=1639255882
 rm -rf %{buildroot}
 pushd clr-build32
 %make_install32

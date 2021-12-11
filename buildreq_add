@@ -39,6 +39,9 @@ python-dbusmock
 qttools-dev
 systemd-dev
 systemd-dev32
+util-linux
+util-linux-dev
+util-linux-staticdev
 xmlto
 xvfbwrapper
 xvfb-run
