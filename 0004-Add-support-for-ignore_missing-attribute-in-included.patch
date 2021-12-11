@@ -1,23 +1,15 @@
-From fcec43b7e688086079603e9a45e0be08e181fb92 Mon Sep 17 00:00:00 2001
-From: Ikey Doherty <michael.i.doherty@intel.com>
-Date: Mon, 24 Apr 2017 16:31:46 +0100
-Subject: [PATCH 1/4] Add support for ignore_missing attribute in includedir
+From 62c4ad401b705359c39b5b729169f1803c6b2db0 Mon Sep 17 00:00:00 2001
+From: Francisco Boni <boboniboni@gmail.com>
+Date: Sat, 11 Dec 2021 20:05:39 -0300
+Subject: [PATCH 4/4] Add support for ignore_missing attribute in includedir
 
-Rebased variant of the original patch by Dimitri John Ledkov, to support
-dbus 1.10.18 and merging the previous stateless directories patch into
-one single patch.
-
-A notably change from defaults is ensuring that session.d absence is not
-considered fatal, as a minimal image would not have any session.d files
-by default.
-
-Signed-off-by: Ikey Doherty <michael.i.doherty@intel.com>
 ---
- bus/config-parser.c | 56 ++++++++++++++++++++++++++++++++++++---------
- bus/session.conf.in |  4 ++--
- bus/system.conf.in  |  2 +-
- doc/busconfig.dtd   |  2 ++
- 4 files changed, 50 insertions(+), 14 deletions(-)
+ bus/config-parser.c                           | 56 +++++++++++++++----
+ bus/session.conf.in                           |  4 +-
+ bus/system.conf.in                            |  2 +-
+ doc/busconfig.dtd                             |  2 +
+ .../valid-config-files-system/many-rules.conf |  2 +-
+ 5 files changed, 51 insertions(+), 15 deletions(-)
 
 diff --git a/bus/config-parser.c b/bus/config-parser.c
 index f9b70477..e4b0fe8f 100644
@@ -162,6 +154,19 @@ index 8c5ac334..9e25cc3a 100644
  <!ELEMENT servicedir (#PCDATA)>
  <!ELEMENT servicehelper (#PCDATA)>
  <!ELEMENT auth (#PCDATA)>
+diff --git a/test/data/valid-config-files-system/many-rules.conf b/test/data/valid-config-files-system/many-rules.conf
+index 8e893065..332cbd48 100644
+--- a/test/data/valid-config-files-system/many-rules.conf
++++ b/test/data/valid-config-files-system/many-rules.conf
+@@ -4,7 +4,7 @@
+   <user>mybususer</user>
+   <listen>unix:path=/foo/bar</listen>
+   <listen>tcp:port=1234</listen>
+-  <includedir>basic.d</includedir>
++  <includedir ignore_missing="yes">basic.d</includedir>
+   <standard_session_servicedirs />
+   <servicedir>/usr/share/foo</servicedir>
+   <include ignore_missing="yes">nonexistent.conf</include>
 -- 
 2.34.1
 
