@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 544
+Release  : 545
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
@@ -113,7 +113,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639258579
+export SOURCE_DATE_EPOCH=1639261161
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -216,6 +216,7 @@ export LIBS="${LIBS_GENERATE}"
 -DBUILD_SHARED_LIBS=ON \
 -DDBUS_WITH_GLIB:BOOL=ON \
 -DDBUS_INSTALL_SYSTEM_LIBS:BOOL=ON \
+-DENABLE_TRADITIONAL_ACTIVATION:BOOL=ON \
 -DENABLE_USER_SESSION:BOOL=ON \
 -DENABLE_SYSTEMD:STRING=YES \
 -DDBUS_BUS_ENABLE_SYSTEMD:BOOL=ON \
@@ -230,7 +231,9 @@ export LIBS="${LIBS_GENERATE}"
 -DDBUS_BUILD_TESTS:BOOL=ON \
 -DTEST_SOCKET_DIR:STRING=/run/user/1000/ \
 -DTEST_LISTEN:STRING=unix:path=/run/user/1000/bus \
--DDBUS_TEST_USER:STRING=boni
+-DDBUS_TEST_USER=boni \
+-DENABLE_VERBOSE_CONFIG:BOOL=ON \
+-DCMAKE_INSTALL_SYSCONFDIR=/etc
 make  %{?_smp_mflags}    V=1 VERBOSE=1
 
 ## profile_payload start
@@ -262,6 +265,7 @@ export LIBS="${LIBS_USE}"
 -DBUILD_SHARED_LIBS=ON \
 -DDBUS_WITH_GLIB:BOOL=ON \
 -DDBUS_INSTALL_SYSTEM_LIBS:BOOL=ON \
+-DENABLE_TRADITIONAL_ACTIVATION:BOOL=ON \
 -DENABLE_USER_SESSION:BOOL=ON \
 -DENABLE_SYSTEMD:STRING=YES \
 -DDBUS_BUS_ENABLE_SYSTEMD:BOOL=ON \
@@ -329,7 +333,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639258579
+export SOURCE_DATE_EPOCH=1639261161
 rm -rf %{buildroot}
 pushd clr-build32
 %make_install32

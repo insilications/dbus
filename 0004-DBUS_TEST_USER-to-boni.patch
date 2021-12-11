@@ -1,0 +1,25 @@
+From 8ed961307ce16d2a4951ef1ebab01b6d73f7a01a Mon Sep 17 00:00:00 2001
+From: Francisco Boni <boboniboni@gmail.com>
+Date: Sat, 11 Dec 2021 19:25:08 -0300
+Subject: [PATCH 4/4] DBUS_TEST_USER to boni
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 994f7197..3716ce7f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -609,7 +609,7 @@ else(WIN32)
+     set(DBUS_SYSTEM_CONFIG_FILE  ${configdir}/system.conf)
+     set(DBUS_SESSION_CONFIG_FILE ${configdir}/session.conf)
+     set(DBUS_USER "messagebus")
+-    set(DBUS_TEST_USER "nobody")
++    set(DBUS_TEST_USER "boni")
+   # For best security, assume that all non-Windows platforms can do
+   # credentials-passing.
+     set(DBUS_SESSION_CONF_MAYBE_AUTH_EXTERNAL "<auth>EXTERNAL</auth>")
+-- 
+2.34.1
+
