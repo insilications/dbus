@@ -5,13 +5,12 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 516
+Release  : 517
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
 Group    : Development/Tools
 License  : AFL-2.1 GPL-2.0+
-BuildRequires : buildreq-cmake
 BuildRequires : dbus-glib
 BuildRequires : dbus-python
 BuildRequires : dbus-python-dev
@@ -95,7 +94,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639225443
+export SOURCE_DATE_EPOCH=1639225647
 export GCC_IGNORE_WERROR=1
 ## altflags_pgo content
 ## pgo generate
@@ -191,11 +190,7 @@ export FCFLAGS="${FCFLAGS_GENERATE}"
 export LDFLAGS="${LDFLAGS_GENERATE}"
 export ASMFLAGS="${ASMFLAGS_GENERATE}"
 export LIBS="${LIBS_GENERATE}"
-%autogen  --disable-tests \
---disable-asserts \
---disable-installed-tests \
---disable-stats \
---enable-debug=no \
+%autogen  --enable-debug=no \
 --enable-x11-autolaunch \
 --enable-static \
 --disable-xml-docs \
@@ -209,7 +204,9 @@ export LIBS="${LIBS_GENERATE}"
 --with-system-pid-file=/run/dbus/pid \
 --with-console-auth-dir=/run/console/ \
 --sysconfdir=/usr/share \
---with-x
+--with-x \
+--enable-installed-tests \
+--enable-tests
 make  %{?_smp_mflags}    V=1 VERBOSE=1
 
 ## profile_payload start
@@ -231,7 +228,7 @@ export FCFLAGS="${FCFLAGS_USE}"
 export LDFLAGS="${LDFLAGS_USE}"
 export ASMFLAGS="${ASMFLAGS_USE}"
 export LIBS="${LIBS_USE}"
-%autogen  --disable-tests \
+%autogen --disable-tests \
 --disable-asserts \
 --disable-installed-tests \
 --disable-stats \
@@ -293,7 +290,7 @@ make  %{?_smp_mflags}    V=1 VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639225443
+export SOURCE_DATE_EPOCH=1639225647
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32

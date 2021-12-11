@@ -1,5 +1,4 @@
 --enable-debug=no
---enable-x11-autolaunch
 --enable-static
 --disable-xml-docs
 --localstatedir=/var
