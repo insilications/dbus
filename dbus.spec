@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 517
+Release  : 518
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
@@ -94,7 +94,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639225647
+export SOURCE_DATE_EPOCH=1639225813
 export GCC_IGNORE_WERROR=1
 ## altflags_pgo content
 ## pgo generate
@@ -191,7 +191,6 @@ export LDFLAGS="${LDFLAGS_GENERATE}"
 export ASMFLAGS="${ASMFLAGS_GENERATE}"
 export LIBS="${LIBS_GENERATE}"
 %autogen  --enable-debug=no \
---enable-x11-autolaunch \
 --enable-static \
 --disable-xml-docs \
 --localstatedir=/var \
@@ -233,7 +232,6 @@ export LIBS="${LIBS_USE}"
 --disable-installed-tests \
 --disable-stats \
 --enable-debug=no \
---enable-x11-autolaunch \
 --enable-static \
 --disable-xml-docs \
 --localstatedir=/var \
@@ -290,7 +288,7 @@ make  %{?_smp_mflags}    V=1 VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639225647
+export SOURCE_DATE_EPOCH=1639225813
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32

@@ -18,8 +18,14 @@ glibc-libc32
 glib-dev
 glib-dev32
 gnupg
+libcap-dev
+libcap-dev32
+libcap-staticdev
 libxml2-dev
 libxslt-bin
+lz4-dev
+lz4-dev32
+lz4-staticdev
 perl(XML::Parser)
 pkg-config
 python-dbusmock
@@ -29,3 +35,9 @@ systemd-dev32
 xmlto
 xvfbwrapper
 xvfb-run
+zlib-dev
+zlib-dev32
+zlib-staticdev
+zstd-dev
+zstd-dev32
+zstd-staticdev
