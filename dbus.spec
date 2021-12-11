@@ -5,12 +5,13 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 537
+Release  : 538
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
 Group    : Development/Tools
 License  : AFL-2.1 GPL-2.0+
+BuildRequires : buildreq-cmake
 BuildRequires : dbus-dev
 BuildRequires : dbus-glib
 BuildRequires : dbus-python
@@ -21,6 +22,7 @@ BuildRequires : expat-dev
 BuildRequires : expat-dev32
 BuildRequires : expat-staticdev
 BuildRequires : expat-staticdev32
+BuildRequires : extra-cmake-modules pkgconfig(glib-2.0)
 BuildRequires : freetype-dev
 BuildRequires : gcc
 BuildRequires : gcc-dev
@@ -39,6 +41,7 @@ BuildRequires : glibc-libc32
 BuildRequires : gnupg
 BuildRequires : graphite-dev
 BuildRequires : harfbuzz-dev
+BuildRequires : libX11-dev libICE-dev libSM-dev libXau-dev libXcomposite-dev libXcursor-dev libXdamage-dev libXdmcp-dev libXext-dev libXfixes-dev libXft-dev libXi-dev libXinerama-dev libXi-dev libXmu-dev libXpm-dev libXrandr-dev libXrender-dev libXres-dev libXScrnSaver-dev libXt-dev libXtst-dev libXv-dev libXxf86vm-dev
 BuildRequires : libcap-dev
 BuildRequires : libcap-dev32
 BuildRequires : libcap-staticdev
@@ -110,7 +113,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639238891
+export SOURCE_DATE_EPOCH=1639253084
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -211,22 +214,29 @@ export LIBS="${LIBS_GENERATE}"
 -DDBUS_ENABLE_XML_DOCS:BOOL=OFF \
 -DENABLE_WERROR:BOOL=OFF \
 -DBUILD_SHARED_LIBS=ON \
+-DDBUS_WITH_GLIB:BOOL=ON \
 -DENABLE_USER_SESSION:BOOL=ON \
--DENABLE_SYSTEMD:STRING=AUTO \
+-DENABLE_SYSTEMD:STRING=YES \
+-DDBUS_BUS_ENABLE_SYSTEMD:BOOL=ON \
 -DWITH_SYSTEMD_SYSTEMUNITDIR:STRING=/usr/lib/systemd/system \
 -DWITH_SYSTEMD_USERUNITDIR:STRING=/usr/lib/systemd/user \
--DDBUS_INSTALL_SYSTEM_LIBS:BOOL=ON \
--DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS:STRING=unix:path=/var/run/dbus/system_bus_socket \
+-DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS:STRING=unix:path=/run/dbus/system_bus_socket \
 -DDBUS_BUILD_X11:BOOL=ON \
+-DDBUS_SYSTEM_PID_FILE:STRING=/run/dbus/pid \
 -DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
--DDBUS_BUILD_TESTS:BOOL=ON
+-DDBUS_BUILD_TESTS:BOOL=ON \
+-DTEST_SOCKET_DIR:STRING=/run/user/1000/ \
+-DTEST_LISTEN:STRING=unix:path=/run/user/1000/bus \
+-DDBUS_TEST_USER:STRING=boni
 make  %{?_smp_mflags}    V=1 VERBOSE=1
 
 ## profile_payload start
 unset LD_LIBRARY_PATH
 unset LIBRARY_PATH
 # make -j1 check V=1 VERBOSE=1 || :
+export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
 ctest --parallel 1 --verbose --progress || :
+exit 1
 export LD_LIBRARY_PATH="/usr/nvidia/lib64:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/haswell/pulseaudio:/usr/lib64/haswell/alsa-lib:/usr/lib64/haswell/gstreamer-1.0:/usr/lib64/haswell/pipewire-0.3:/usr/lib64/haswell/spa-0.2:/usr/lib64/dri:/usr/lib64/chromium:/usr/lib64:/usr/lib64/pulseaudio:/usr/lib64/alsa-lib:/usr/lib64/gstreamer-1.0:/usr/lib64/pipewire-0.3:/usr/lib64/spa-0.2:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
 export LIBRARY_PATH="/usr/nvidia/lib64:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/haswell/pulseaudio:/usr/lib64/haswell/alsa-lib:/usr/lib64/haswell/gstreamer-1.0:/usr/lib64/haswell/pipewire-0.3:/usr/lib64/haswell/spa-0.2:/usr/lib64/dri:/usr/lib64/chromium:/usr/lib64:/usr/lib64/pulseaudio:/usr/lib64/alsa-lib:/usr/lib64/gstreamer-1.0:/usr/lib64/pipewire-0.3:/usr/lib64/spa-0.2:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
 ## profile_payload end
@@ -247,17 +257,21 @@ export LIBS="${LIBS_USE}"
 -DDBUS_ENABLE_XML_DOCS:BOOL=OFF \
 -DENABLE_WERROR:BOOL=OFF \
 -DBUILD_SHARED_LIBS=ON \
+-DDBUS_WITH_GLIB:BOOL=ON \
 -DENABLE_USER_SESSION:BOOL=ON \
--DENABLE_SYSTEMD:STRING=AUTO \
+-DENABLE_SYSTEMD:STRING=YES \
+-DDBUS_BUS_ENABLE_SYSTEMD:BOOL=ON \
 -DWITH_SYSTEMD_SYSTEMUNITDIR:STRING=/usr/lib/systemd/system \
 -DWITH_SYSTEMD_USERUNITDIR:STRING=/usr/lib/systemd/user \
--DDBUS_INSTALL_SYSTEM_LIBS:BOOL=ON \
--DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS:STRING=unix:path=/var/run/dbus/system_bus_socket \
+-DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS:STRING=unix:path=/run/dbus/system_bus_socket \
 -DDBUS_BUILD_X11:BOOL=ON \
+-DDBUS_SYSTEM_PID_FILE:STRING=/run/dbus/pid \
 -DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
 -DDBUS_BUILD_TESTS:BOOL=OFF \
 -DDBUS_ENABLE_STATS:BOOL=OFF \
--DDBUS_DISABLE_ASSERT:BOOL=OFF
+-DDBUS_DISABLE_ASSERT:BOOL=ON \
+-DDBUS_DISABLE_CHECKS:BOOL=ON \
+-DDBUS_BUILD_TESTS:BOOL=OFF
 make  %{?_smp_mflags}    V=1 VERBOSE=1
 fi
 popd
@@ -306,7 +320,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639238891
+export SOURCE_DATE_EPOCH=1639253084
 rm -rf %{buildroot}
 pushd clr-build32
 %make_install32
