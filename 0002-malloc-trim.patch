@@ -1,7 +1,7 @@
-From 1997b43f97544e509033c6d3b36faf1b74334892 Mon Sep 17 00:00:00 2001
+From 00542b45a9e6c7a831d4925b656dbf7a20fc27c8 Mon Sep 17 00:00:00 2001
 From: Francisco Boni <boboniboni@gmail.com>
 Date: Mon, 6 Dec 2021 10:56:22 -0300
-Subject: [PATCH 2/4] malloc trim
+Subject: [PATCH 2/3] malloc trim
 
 ---
  bus/main.c | 8 ++++++++
@@ -34,5 +34,5 @@ index 5f756d5c..eb63cb7f 100644
  
    bus_context_shutdown (context);
 -- 
-2.34.0
+2.34.1
 
