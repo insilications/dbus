@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 538
+Release  : 539
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
@@ -113,7 +113,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639253084
+export SOURCE_DATE_EPOCH=1639255283
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -215,6 +215,7 @@ export LIBS="${LIBS_GENERATE}"
 -DENABLE_WERROR:BOOL=OFF \
 -DBUILD_SHARED_LIBS=ON \
 -DDBUS_WITH_GLIB:BOOL=ON \
+-DDBUS_INSTALL_SYSTEM_LIBS:BOOL=ON \
 -DENABLE_USER_SESSION:BOOL=ON \
 -DENABLE_SYSTEMD:STRING=YES \
 -DDBUS_BUS_ENABLE_SYSTEMD:BOOL=ON \
@@ -258,6 +259,7 @@ export LIBS="${LIBS_USE}"
 -DENABLE_WERROR:BOOL=OFF \
 -DBUILD_SHARED_LIBS=ON \
 -DDBUS_WITH_GLIB:BOOL=ON \
+-DDBUS_INSTALL_SYSTEM_LIBS:BOOL=ON \
 -DENABLE_USER_SESSION:BOOL=ON \
 -DENABLE_SYSTEMD:STRING=YES \
 -DDBUS_BUS_ENABLE_SYSTEMD:BOOL=ON \
@@ -305,22 +307,25 @@ export LDFLAGS="-O2 -ffat-lto-objects -fuse-linker-plugin -pipe -fPIC -march=nat
 -DENABLE_WERROR:BOOL=OFF \
 -DBUILD_SHARED_LIBS=ON \
 -DENABLE_USER_SESSION:BOOL=ON \
--DENABLE_SYSTEMD:STRING=AUTO \
+-DENABLE_SYSTEMD:STRING=YES \
+-DDBUS_BUS_ENABLE_SYSTEMD:BOOL=ON \
 -DWITH_SYSTEMD_SYSTEMUNITDIR:STRING=/usr/lib/systemd/system \
 -DWITH_SYSTEMD_USERUNITDIR:STRING=/usr/lib/systemd/user \
--DDBUS_INSTALL_SYSTEM_LIBS:BOOL=ON \
--DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS:STRING=unix:path=/var/run/dbus/system_bus_socket \
--DDBUS_BUILD_X11:BOOL=OFF \
+-DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS:STRING=unix:path=/run/dbus/system_bus_socket \
+-DDBUS_BUILD_X11:BOOL=ON \
+-DDBUS_SYSTEM_PID_FILE:STRING=/run/dbus/pid \
 -DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
 -DDBUS_BUILD_TESTS:BOOL=OFF \
 -DDBUS_ENABLE_STATS:BOOL=OFF \
--DDBUS_DISABLE_ASSERT:BOOL=OFF
+-DDBUS_DISABLE_ASSERT:BOOL=ON \
+-DDBUS_DISABLE_CHECKS:BOOL=ON \
+-DDBUS_BUILD_TESTS:BOOL=OFF
 make  %{?_smp_mflags}    V=1 VERBOSE=1
 unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639253084
+export SOURCE_DATE_EPOCH=1639255283
 rm -rf %{buildroot}
 pushd clr-build32
 %make_install32
