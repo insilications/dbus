@@ -1,7 +1,7 @@
 From 62c4ad401b705359c39b5b729169f1803c6b2db0 Mon Sep 17 00:00:00 2001
 From: Francisco Boni <boboniboni@gmail.com>
 Date: Sat, 11 Dec 2021 20:05:39 -0300
-Subject: [PATCH 4/4] Add support for ignore_missing attribute in includedir
+Subject: [PATCH 4/5] Add support for ignore_missing attribute in includedir
 
 ---
  bus/config-parser.c                           | 56 +++++++++++++++----

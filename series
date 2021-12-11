@@ -2,3 +2,4 @@
 # 0002-memory.patch
 0003-DBUS_TEST_USER-to-boni.patch
 0004-Add-support-for-ignore_missing-attribute-in-included.patch
+0005-unset-DBUS_FATAL_WARNINGS-DBUS_SESSION_BUS_ADDRESS.patch
