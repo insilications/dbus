@@ -31,6 +31,8 @@ Configure miss: whether C++ compiler accepts -Werror=unknown-warning-option
 Configure miss: whether C++ compiler accepts -Werror=unknown-warning-option
 Configure miss: whether to build Ducktype documentation
 Configure miss: whether to build Ducktype documentation
+Configure miss: whether to build Qt help documentation
+Configure miss: whether to build Qt help documentation
 Configure miss: whether to build XML documentation
 Configure miss: whether to build XML documentation
 Configure miss: whether to enable debugging
