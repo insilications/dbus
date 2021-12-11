@@ -5,13 +5,12 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 539
+Release  : 541
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
 Group    : Development/Tools
 License  : AFL-2.1 GPL-2.0+
-BuildRequires : buildreq-cmake
 BuildRequires : dbus-dev
 BuildRequires : dbus-glib
 BuildRequires : dbus-python
@@ -22,7 +21,6 @@ BuildRequires : expat-dev
 BuildRequires : expat-dev32
 BuildRequires : expat-staticdev
 BuildRequires : expat-staticdev32
-BuildRequires : extra-cmake-modules pkgconfig(glib-2.0)
 BuildRequires : freetype-dev
 BuildRequires : gcc
 BuildRequires : gcc-dev
@@ -41,7 +39,6 @@ BuildRequires : glibc-libc32
 BuildRequires : gnupg
 BuildRequires : graphite-dev
 BuildRequires : harfbuzz-dev
-BuildRequires : libX11-dev libICE-dev libSM-dev libXau-dev libXcomposite-dev libXcursor-dev libXdamage-dev libXdmcp-dev libXext-dev libXfixes-dev libXft-dev libXi-dev libXinerama-dev libXi-dev libXmu-dev libXpm-dev libXrandr-dev libXrender-dev libXres-dev libXScrnSaver-dev libXt-dev libXtst-dev libXv-dev libXxf86vm-dev
 BuildRequires : libcap-dev
 BuildRequires : libcap-dev32
 BuildRequires : libcap-staticdev
@@ -113,7 +110,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639255283
+export SOURCE_DATE_EPOCH=1639255728
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -222,9 +219,11 @@ export LIBS="${LIBS_GENERATE}"
 -DWITH_SYSTEMD_SYSTEMUNITDIR:STRING=/usr/lib/systemd/system \
 -DWITH_SYSTEMD_USERUNITDIR:STRING=/usr/lib/systemd/user \
 -DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS:STRING=unix:path=/run/dbus/system_bus_socket \
+-DDBUS_SYSTEM_SOCKET:STRING=/run/dbus/system_bus_socket \
 -DDBUS_BUILD_X11:BOOL=ON \
 -DDBUS_SYSTEM_PID_FILE:STRING=/run/dbus/pid \
 -DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
+-DDBUS_ENABLE_VERBOSE_MODE:BOOL=OFF \
 -DDBUS_BUILD_TESTS:BOOL=ON \
 -DTEST_SOCKET_DIR:STRING=/run/user/1000/ \
 -DTEST_LISTEN:STRING=unix:path=/run/user/1000/bus \
@@ -266,9 +265,11 @@ export LIBS="${LIBS_USE}"
 -DWITH_SYSTEMD_SYSTEMUNITDIR:STRING=/usr/lib/systemd/system \
 -DWITH_SYSTEMD_USERUNITDIR:STRING=/usr/lib/systemd/user \
 -DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS:STRING=unix:path=/run/dbus/system_bus_socket \
+-DDBUS_SYSTEM_SOCKET:STRING=/run/dbus/system_bus_socket \
 -DDBUS_BUILD_X11:BOOL=ON \
 -DDBUS_SYSTEM_PID_FILE:STRING=/run/dbus/pid \
 -DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
+-DDBUS_ENABLE_VERBOSE_MODE:BOOL=OFF \
 -DDBUS_BUILD_TESTS:BOOL=OFF \
 -DDBUS_ENABLE_STATS:BOOL=OFF \
 -DDBUS_DISABLE_ASSERT:BOOL=ON \
@@ -325,7 +326,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639255283
+export SOURCE_DATE_EPOCH=1639255728
 rm -rf %{buildroot}
 pushd clr-build32
 %make_install32
