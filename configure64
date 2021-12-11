@@ -1,5 +1,5 @@
 --enable-debug=no
---enable-static
+--disable-static
 --disable-xml-docs
 --localstatedir=/var
 --runstatedir=/run
@@ -12,5 +12,4 @@
 --with-console-auth-dir=/run/console/
 --sysconfdir=/usr/share
 --with-x
---enable-installed-tests
 --enable-tests
