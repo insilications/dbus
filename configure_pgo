@@ -1,3 +1,7 @@
+--disable-tests
+--disable-asserts
+--disable-installed-tests
+--disable-stats
 --enable-debug=no
 --enable-x11-autolaunch
 --enable-static
@@ -13,5 +17,3 @@
 --with-console-auth-dir=/run/console/
 --sysconfdir=/usr/share
 --with-x
---enable-installed-tests
---enable-tests
