@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 550
+Release  : 551
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
@@ -90,6 +90,7 @@ BuildRequires : zstd-staticdev
 %define debug_package %{nil}
 Patch1: 0003-DBUS_TEST_USER-to-boni.patch
 Patch2: 0004-Add-support-for-ignore_missing-attribute-in-included.patch
+Patch3: 0005-unset-DBUS_FATAL_WARNINGS-DBUS_SESSION_BUS_ADDRESS.patch
 
 %description
 Sections in this file describe:
@@ -104,6 +105,7 @@ Sections in this file describe:
 cd %{_builddir}/dbus
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 unset http_proxy
@@ -111,7 +113,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639264015
+export SOURCE_DATE_EPOCH=1639264987
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -331,7 +333,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639264015
+export SOURCE_DATE_EPOCH=1639264987
 rm -rf %{buildroot}
 pushd clr-build32
 %make_install32

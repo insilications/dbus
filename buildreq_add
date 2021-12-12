@@ -27,7 +27,9 @@ libcap-dev32
 libcap-staticdev
 libpng-dev
 libxml2-dev
+libxslt
 libxslt-bin
+libxslt-dev
 lz4-dev
 lz4-dev32
 lz4-staticdev
