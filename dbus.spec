@@ -5,12 +5,13 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 551
+Release  : 552
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
 Group    : Development/Tools
 License  : AFL-2.1 GPL-2.0+
+BuildRequires : buildreq-cmake
 BuildRequires : dbus-dev
 BuildRequires : dbus-glib
 BuildRequires : dbus-python
@@ -21,6 +22,7 @@ BuildRequires : expat-dev
 BuildRequires : expat-dev32
 BuildRequires : expat-staticdev
 BuildRequires : expat-staticdev32
+BuildRequires : extra-cmake-modules pkgconfig(glib-2.0)
 BuildRequires : freetype-dev
 BuildRequires : gcc
 BuildRequires : gcc-dev
@@ -39,6 +41,7 @@ BuildRequires : glibc-libc32
 BuildRequires : gnupg
 BuildRequires : graphite-dev
 BuildRequires : harfbuzz-dev
+BuildRequires : libX11-dev libICE-dev libSM-dev libXau-dev libXcomposite-dev libXcursor-dev libXdamage-dev libXdmcp-dev libXext-dev libXfixes-dev libXft-dev libXi-dev libXinerama-dev libXi-dev libXmu-dev libXpm-dev libXrandr-dev libXrender-dev libXres-dev libXScrnSaver-dev libXt-dev libXtst-dev libXv-dev libXxf86vm-dev
 BuildRequires : libcap-dev
 BuildRequires : libcap-dev32
 BuildRequires : libcap-staticdev
@@ -46,7 +49,9 @@ BuildRequires : libgcc1
 BuildRequires : libpng-dev
 BuildRequires : libstdc++
 BuildRequires : libxml2-dev
+BuildRequires : libxslt
 BuildRequires : libxslt-bin
+BuildRequires : libxslt-dev
 BuildRequires : lz4-dev
 BuildRequires : lz4-dev32
 BuildRequires : lz4-staticdev
@@ -113,7 +118,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639264987
+export SOURCE_DATE_EPOCH=1639268168
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -229,11 +234,7 @@ export LIBS="${LIBS_GENERATE}"
 -DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
 -DDBUS_ENABLE_VERBOSE_MODE:BOOL=ON \
 -DDBUS_BUILD_TESTS:BOOL=ON \
--DTEST_SOCKET_DIR:STRING=/run/user/1000/ \
--DTEST_LISTEN:STRING=unix:path=/run/user/1000/bus \
--DDBUS_TEST_USER=boni \
--DENABLE_VERBOSE_CONFIG:BOOL=ON \
--DCMAKE_INSTALL_FULL_SYSCONFDIR=/usr/share
+-DENABLE_VERBOSE_CONFIG:BOOL=ON
 make  %{?_smp_mflags}    V=1 VERBOSE=1
 
 ## profile_payload start
@@ -333,7 +334,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639264987
+export SOURCE_DATE_EPOCH=1639268168
 rm -rf %{buildroot}
 pushd clr-build32
 %make_install32

@@ -1,4 +1,4 @@
 # make -j1 check V=1 VERBOSE=1 || :
-# export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+unset DBUS_SESSION_BUS_ADDRESS
 ctest --parallel 1 --verbose --progress || :
-exit 1
+export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
