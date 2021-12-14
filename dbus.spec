@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 553
+Release  : 554
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
@@ -90,9 +90,11 @@ BuildRequires : zstd-staticdev
 # Suppress stripping binaries
 %define __strip /bin/true
 %define debug_package %{nil}
-Patch1: 0003-DBUS_TEST_USER-to-boni.patch
-Patch2: 0004-Add-support-for-ignore_missing-attribute-in-included.patch
-Patch3: 0005-unset-DBUS_FATAL_WARNINGS-DBUS_SESSION_BUS_ADDRESS.patch
+Patch1: 0001-malloc-trim.patch
+Patch2: 0002-memory.patch
+Patch3: 0003-DBUS_TEST_USER-to-boni.patch
+Patch4: 0004-Add-support-for-ignore_missing-attribute-in-included.patch
+Patch5: 0005-unset-DBUS_FATAL_WARNINGS-DBUS_SESSION_BUS_ADDRESS.patch
 
 %description
 Sections in this file describe:
@@ -108,6 +110,8 @@ cd %{_builddir}/dbus
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %build
 unset http_proxy
@@ -115,7 +119,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639268609
+export SOURCE_DATE_EPOCH=1639465418
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -229,9 +233,11 @@ export LIBS="${LIBS_GENERATE}"
 -DDBUS_BUILD_X11:BOOL=ON \
 -DDBUS_SYSTEM_PID_FILE:STRING=/run/dbus/pid \
 -DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
--DDBUS_ENABLE_VERBOSE_MODE:BOOL=ON \
--DDBUS_BUILD_TESTS:BOOL=ON \
--DENABLE_VERBOSE_CONFIG:BOOL=ON
+-DDBUS_ENABLE_VERBOSE_MODE:BOOL=OFF \
+-DDBUS_ENABLE_STATS:BOOL=OFF \
+-DDBUS_DISABLE_ASSERT:BOOL=ON \
+-DDBUS_DISABLE_CHECKS:BOOL=ON \
+-DDBUS_BUILD_TESTS:BOOL=ON
 make  %{?_smp_mflags}    V=1 VERBOSE=1
 
 ## profile_payload start
@@ -274,8 +280,7 @@ export LIBS="${LIBS_USE}"
 -DDBUS_BUILD_X11:BOOL=ON \
 -DDBUS_SYSTEM_PID_FILE:STRING=/run/dbus/pid \
 -DDBUS_CONSOLE_AUTH_DIR:STRING=/run/console/ \
--DDBUS_ENABLE_VERBOSE_MODE:BOOL=ON \
--DDBUS_BUILD_TESTS:BOOL=OFF \
+-DDBUS_ENABLE_VERBOSE_MODE:BOOL=OFF \
 -DDBUS_ENABLE_STATS:BOOL=OFF \
 -DDBUS_DISABLE_ASSERT:BOOL=ON \
 -DDBUS_DISABLE_CHECKS:BOOL=ON \
@@ -331,7 +336,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639268609
+export SOURCE_DATE_EPOCH=1639465418
 rm -rf %{buildroot}
 pushd clr-build32
 %make_install32
