@@ -3,7 +3,6 @@
 --disable-Werror
 --enable-qt-help=no
 --enable-shared
---disable-static
 --enable-systemd
 --enable-user-session
 --enable-epoll
