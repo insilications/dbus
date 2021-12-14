@@ -1,25 +1,218 @@
-From 8658bac011c637372dd78bb6072815672f8b15d9 Mon Sep 17 00:00:00 2001
+From 5a49ef82db4cc530addc4cc9259f20d4134b4d0a Mon Sep 17 00:00:00 2001
 From: Francisco Boni <boboniboni@gmail.com>
 Date: Tue, 14 Dec 2021 04:22:26 -0300
 Subject: [PATCH 6/6] Allow BUILD_SHARED_LIBS to decide
 
 ---
- dbus/CMakeLists.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ dbus/CMakeLists.txt | 185 ++++++++++++++++++++++++++++++--------------
+ 1 file changed, 129 insertions(+), 56 deletions(-)
 
 diff --git a/dbus/CMakeLists.txt b/dbus/CMakeLists.txt
-index e9203ca6..222a1782 100644
+index e9203ca6..e09cef5c 100644
 --- a/dbus/CMakeLists.txt
 +++ b/dbus/CMakeLists.txt
-@@ -262,7 +262,7 @@ find_library(LIBRT rt)
+@@ -261,72 +261,145 @@ find_library(LIBRT rt)
+ # for socket() on QNX
  find_library(LIBSOCKET socket)
  
- ### Client library
+-### Client library
 -add_library(dbus-1 SHARED
-+add_library(dbus-1
-     ${libdbus_SOURCES}
-     ${libdbus_HEADERS}
- )
+-    ${libdbus_SOURCES}
+-    ${libdbus_HEADERS}
+-)
++if(BUILD_SHARED_LIBS)
++    ### Client library
++    add_library(dbus-1 SHARED
++        ${libdbus_SOURCES}
++        ${libdbus_HEADERS}
++    )
+ 
+-if(WIN32)
+-    if(DEFINED DBUS_LIBRARY_REVISION)
+-        set_target_properties(dbus-1 PROPERTIES SUFFIX "-${DBUS_LIBRARY_MAJOR}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+-        add_custom_command(TARGET dbus-1 POST_BUILD
+-            COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:dbus-1>" "$<TARGET_FILE_DIR:dbus-1>/${CMAKE_SHARED_LIBRARY_PREFIX}dbus-1${CMAKE_SHARED_LIBRARY_SUFFIX}"
+-            COMMENT "Create non versioned dbus-1 library for legacy applications"
+-        )
+-        install(FILES ${LEGACY_FILE_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
+-    endif()
+-    if(WINCE)
+-        target_link_libraries(dbus-1 ws2)
+-    else(WINCE)
+-        target_link_libraries(dbus-1 ws2_32 advapi32 netapi32 iphlpapi dbghelp)
+-    endif()
+-else(WIN32)
+-    if(DEFINED DBUS_LIBRARY_REVISION)
+-        set_target_properties(dbus-1 PROPERTIES VERSION ${DBUS_LIBRARY_MAJOR}.${DBUS_LIBRARY_AGE}.${DBUS_LIBRARY_REVISION} SOVERSION ${DBUS_LIBRARY_MAJOR})
++    if(WIN32)
++        if(DEFINED DBUS_LIBRARY_REVISION)
++            set_target_properties(dbus-1 PROPERTIES SUFFIX "-${DBUS_LIBRARY_MAJOR}${CMAKE_SHARED_LIBRARY_SUFFIX}")
++            add_custom_command(TARGET dbus-1 POST_BUILD
++                COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:dbus-1>" "$<TARGET_FILE_DIR:dbus-1>/${CMAKE_SHARED_LIBRARY_PREFIX}dbus-1${CMAKE_SHARED_LIBRARY_SUFFIX}"
++                COMMENT "Create non versioned dbus-1 library for legacy applications"
++            )
++            install(FILES ${LEGACY_FILE_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
++        endif()
++        if(WINCE)
++            target_link_libraries(dbus-1 ws2)
++        else(WINCE)
++            target_link_libraries(dbus-1 ws2_32 advapi32 netapi32 iphlpapi dbghelp)
++        endif()
++    else(WIN32)
++        if(DEFINED DBUS_LIBRARY_REVISION)
++            set_target_properties(dbus-1 PROPERTIES VERSION ${DBUS_LIBRARY_MAJOR}.${DBUS_LIBRARY_AGE}.${DBUS_LIBRARY_REVISION} SOVERSION ${DBUS_LIBRARY_MAJOR})
++        endif()
++        target_link_libraries(dbus-1 ${CMAKE_THREAD_LIBS_INIT} ${SYSTEMD_LIBRARIES})
++        if(LIBRT)
++            target_link_libraries(dbus-1 ${LIBRT})
++        endif()
++        if(LIBSOCKET)
++            target_link_libraries(dbus-1 ${LIBSOCKET})
++        endif()
+     endif()
+-    target_link_libraries(dbus-1 ${CMAKE_THREAD_LIBS_INIT} ${SYSTEMD_LIBRARIES})
+-    if(LIBRT)
+-        target_link_libraries(dbus-1 ${LIBRT})
+-    endif()
+-    if(LIBSOCKET)
+-        target_link_libraries(dbus-1 ${LIBSOCKET})
++
++    target_include_directories(dbus-1 INTERFACE $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/dbus-1.0>;$<INSTALL_INTERFACE:${CMAKE_INSTALL_LIBDIR}/dbus-1.0/include>)
++
++    # Assume that Linux has -Wl,--version-script and other platforms do not
++    if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
++        set(SOVERSION ${DBUS_LIBRARY_MAJOR})
++        configure_file(Version.in ${CMAKE_CURRENT_BINARY_DIR}/Version)
++        set_target_properties(dbus-1 PROPERTIES LINK_FLAGS -Wl,--version-script=${CMAKE_CURRENT_BINARY_DIR}/Version)
+     endif()
+-endif()
+ 
+-target_include_directories(dbus-1 INTERFACE $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/dbus-1.0>;$<INSTALL_INTERFACE:${CMAKE_INSTALL_LIBDIR}/dbus-1.0/include>)
++    install(TARGETS dbus-1 ${INSTALL_TARGETS_DEFAULT_ARGS})
++    install(FILES ${dbusinclude_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dbus-1.0/dbus)
++    install(FILES ${dbusinclude_ARCH_HEADERS} DESTINATION ${CMAKE_INSTALL_LIBDIR}/dbus-1.0/include/dbus)
+ 
+-# Assume that Linux has -Wl,--version-script and other platforms do not
+-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+-    set(SOVERSION ${DBUS_LIBRARY_MAJOR})
+-    configure_file(Version.in ${CMAKE_CURRENT_BINARY_DIR}/Version)
+-    set_target_properties(dbus-1 PROPERTIES LINK_FLAGS -Wl,--version-script=${CMAKE_CURRENT_BINARY_DIR}/Version)
+-endif()
++    ### Internal library, used for the daemon, tools and tests, compiled statically.
+ 
+-install(TARGETS dbus-1 ${INSTALL_TARGETS_DEFAULT_ARGS})
+-install(FILES ${dbusinclude_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dbus-1.0/dbus)
+-install(FILES ${dbusinclude_ARCH_HEADERS} DESTINATION ${CMAKE_INSTALL_LIBDIR}/dbus-1.0/include/dbus)
++    add_library(dbus-internal ${DBUS_INTERNAL_ADD_LIBRARY_OPTIONS}
++        ${DBUS_UTIL_SOURCES}
++        ${DBUS_UTIL_HEADERS}
++    )
++    target_link_libraries(dbus-internal dbus-1)
++    if(WIN32)
++        if(WINCE)
++            target_link_libraries(dbus-internal ws2)
++        else(WINCE)
++            target_link_libraries(dbus-internal ws2_32 advapi32 netapi32 iphlpapi)
++        endif()
++    else(WIN32)
++        target_link_libraries(dbus-internal ${CMAKE_THREAD_LIBS_INIT})
++        if(LIBRT)
++            target_link_libraries(dbus-internal ${LIBRT})
++        endif()
++        if(LIBSOCKET)
++            target_link_libraries(dbus-internal ${LIBSOCKET})
++        endif()
++    endif()
+ 
+-### Internal library, used for the daemon, tools and tests, compiled statically.
++else(BUILD_SHARED_LIBS)
+ 
+-add_library(dbus-internal ${DBUS_INTERNAL_ADD_LIBRARY_OPTIONS}
+-    ${DBUS_UTIL_SOURCES}
+-    ${DBUS_UTIL_HEADERS}
+-)
+-target_link_libraries(dbus-internal dbus-1)
+-if(WIN32)
+-    if(WINCE)
+-        target_link_libraries(dbus-internal ws2)
+-    else(WINCE)
+-        target_link_libraries(dbus-internal ws2_32 advapi32 netapi32 iphlpapi)
++    ### Client library
++    add_library(dbus-1 STATIC
++        ${libdbus_SOURCES}
++        ${libdbus_HEADERS}
++    )
++
++    if(WIN32)
++        if(DEFINED DBUS_LIBRARY_REVISION)
++            set_target_properties(dbus-1 PROPERTIES SUFFIX "-${DBUS_LIBRARY_MAJOR}${CMAKE_SHARED_LIBRARY_SUFFIX}")
++            add_custom_command(TARGET dbus-1 POST_BUILD
++                COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:dbus-1>" "$<TARGET_FILE_DIR:dbus-1>/${CMAKE_SHARED_LIBRARY_PREFIX}dbus-1${CMAKE_SHARED_LIBRARY_SUFFIX}"
++                COMMENT "Create non versioned dbus-1 library for legacy applications"
++            )
++            install(FILES ${LEGACY_FILE_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
++        endif()
++        if(WINCE)
++            target_link_libraries(dbus-1 ws2)
++        else(WINCE)
++            target_link_libraries(dbus-1 ws2_32 advapi32 netapi32 iphlpapi dbghelp)
++        endif()
++    else(WIN32)
++        if(DEFINED DBUS_LIBRARY_REVISION)
++            set_target_properties(dbus-1 PROPERTIES VERSION ${DBUS_LIBRARY_MAJOR}.${DBUS_LIBRARY_AGE}.${DBUS_LIBRARY_REVISION} SOVERSION ${DBUS_LIBRARY_MAJOR})
++        endif()
++        target_link_libraries(dbus-1 ${CMAKE_THREAD_LIBS_INIT} ${SYSTEMD_LIBRARIES})
++        if(LIBRT)
++            target_link_libraries(dbus-1 ${LIBRT})
++        endif()
++        if(LIBSOCKET)
++            target_link_libraries(dbus-1 ${LIBSOCKET})
++        endif()
+     endif()
+-else(WIN32)
+-    target_link_libraries(dbus-internal ${CMAKE_THREAD_LIBS_INIT})
+-    if(LIBRT)
+-        target_link_libraries(dbus-internal ${LIBRT})
++
++    target_include_directories(dbus-1 INTERFACE $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/dbus-1.0>;$<INSTALL_INTERFACE:${CMAKE_INSTALL_LIBDIR}/dbus-1.0/include>)
++
++    # Assume that Linux has -Wl,--version-script and other platforms do not
++    if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
++        set(SOVERSION ${DBUS_LIBRARY_MAJOR})
++        configure_file(Version.in ${CMAKE_CURRENT_BINARY_DIR}/Version)
++        set_target_properties(dbus-1 PROPERTIES LINK_FLAGS -Wl,--version-script=${CMAKE_CURRENT_BINARY_DIR}/Version)
+     endif()
+-    if(LIBSOCKET)
+-        target_link_libraries(dbus-internal ${LIBSOCKET})
++
++    install(TARGETS dbus-1 ${INSTALL_TARGETS_DEFAULT_ARGS})
++    install(FILES ${dbusinclude_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dbus-1.0/dbus)
++    install(FILES ${dbusinclude_ARCH_HEADERS} DESTINATION ${CMAKE_INSTALL_LIBDIR}/dbus-1.0/include/dbus)
++
++    ### Internal library, used for the daemon, tools and tests, compiled statically.
++
++    add_library(dbus-internal ${DBUS_INTERNAL_ADD_LIBRARY_OPTIONS}
++        ${DBUS_UTIL_SOURCES}
++        ${DBUS_UTIL_HEADERS}
++    )
++    target_link_libraries(dbus-internal dbus-1)
++    if(WIN32)
++        if(WINCE)
++            target_link_libraries(dbus-internal ws2)
++        else(WINCE)
++            target_link_libraries(dbus-internal ws2_32 advapi32 netapi32 iphlpapi)
++        endif()
++    else(WIN32)
++        target_link_libraries(dbus-internal ${CMAKE_THREAD_LIBS_INIT})
++        if(LIBRT)
++            target_link_libraries(dbus-internal ${LIBRT})
++        endif()
++        if(LIBSOCKET)
++            target_link_libraries(dbus-internal ${LIBSOCKET})
++        endif()
+     endif()
+ endif()
+ 
 -- 
 2.34.1
 

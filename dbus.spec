@@ -5,13 +5,18 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 558
+Release  : 559
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
 Group    : Development/Tools
 License  : AFL-2.1 GPL-2.0+
-BuildRequires : buildreq-cmake
+Requires: dbus-autostart = %{version}-%{release}
+Requires: dbus-bin = %{version}-%{release}
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-lib = %{version}-%{release}
+Requires: dbus-libexec = %{version}-%{release}
+Requires: dbus-services = %{version}-%{release}
 BuildRequires : dbus-dev
 BuildRequires : dbus-glib
 BuildRequires : dbus-python
@@ -22,7 +27,6 @@ BuildRequires : expat-dev
 BuildRequires : expat-dev32
 BuildRequires : expat-staticdev
 BuildRequires : expat-staticdev32
-BuildRequires : extra-cmake-modules pkgconfig(glib-2.0)
 BuildRequires : freetype-dev
 BuildRequires : gcc
 BuildRequires : gcc-dev
@@ -41,7 +45,6 @@ BuildRequires : glibc-libc32
 BuildRequires : gnupg
 BuildRequires : graphite-dev
 BuildRequires : harfbuzz-dev
-BuildRequires : libX11-dev libICE-dev libSM-dev libXau-dev libXcomposite-dev libXcursor-dev libXdamage-dev libXdmcp-dev libXext-dev libXfixes-dev libXft-dev libXi-dev libXinerama-dev libXi-dev libXmu-dev libXpm-dev libXrandr-dev libXrender-dev libXres-dev libXScrnSaver-dev libXt-dev libXtst-dev libXv-dev libXxf86vm-dev
 BuildRequires : libcap-dev
 BuildRequires : libcap-dev32
 BuildRequires : libcap-staticdev
@@ -108,6 +111,101 @@ Sections in this file describe:
 - options to the configure script
 - ABI stability policy
 
+%package autostart
+Summary: autostart components for the dbus package.
+Group: Default
+
+%description autostart
+autostart components for the dbus package.
+
+
+%package bin
+Summary: bin components for the dbus package.
+Group: Binaries
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-libexec = %{version}-%{release}
+Requires: dbus-services = %{version}-%{release}
+
+%description bin
+bin components for the dbus package.
+
+
+%package data
+Summary: data components for the dbus package.
+Group: Data
+
+%description data
+data components for the dbus package.
+
+
+%package dev
+Summary: dev components for the dbus package.
+Group: Development
+Requires: dbus-lib = %{version}-%{release}
+Requires: dbus-bin = %{version}-%{release}
+Requires: dbus-data = %{version}-%{release}
+Provides: dbus-devel = %{version}-%{release}
+Requires: dbus = %{version}-%{release}
+
+%description dev
+dev components for the dbus package.
+
+
+%package dev32
+Summary: dev32 components for the dbus package.
+Group: Default
+Requires: dbus-lib32 = %{version}-%{release}
+Requires: dbus-bin = %{version}-%{release}
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-dev = %{version}-%{release}
+
+%description dev32
+dev32 components for the dbus package.
+
+
+%package doc
+Summary: doc components for the dbus package.
+Group: Documentation
+
+%description doc
+doc components for the dbus package.
+
+
+%package lib
+Summary: lib components for the dbus package.
+Group: Libraries
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-libexec = %{version}-%{release}
+
+%description lib
+lib components for the dbus package.
+
+
+%package lib32
+Summary: lib32 components for the dbus package.
+Group: Default
+Requires: dbus-data = %{version}-%{release}
+
+%description lib32
+lib32 components for the dbus package.
+
+
+%package libexec
+Summary: libexec components for the dbus package.
+Group: Default
+
+%description libexec
+libexec components for the dbus package.
+
+
+%package services
+Summary: services components for the dbus package.
+Group: Systemd services
+
+%description services
+services components for the dbus package.
+
+
 %prep
 %setup -q -n dbus
 cd %{_builddir}/dbus
@@ -124,7 +222,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639466915
+export SOURCE_DATE_EPOCH=1639467396
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -457,7 +555,7 @@ export LIBS="${LIBS_USE}"
 -DDBUS_ENABLE_STATS:BOOL=OFF \
 -DDBUS_DISABLE_ASSERT:BOOL=ON \
 -DDBUS_DISABLE_CHECKS:BOOL=ON \
--DDBUS_BUILD_TESTS:BOOL=ON
+-DDBUS_BUILD_TESTS:BOOL=OFF
 make  %{?_smp_mflags}    V=1 VERBOSE=1
 fi
 popd
@@ -509,7 +607,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639466915
+export SOURCE_DATE_EPOCH=1639467396
 rm -rf %{buildroot}
 pushd clr-build32
 %make_install32
@@ -526,15 +624,96 @@ for i in *.pc ; do ln -s $i 32$i ; done
 popd
 fi
 popd
-## install_macro_build_special start
-pushd ../build-special/
-%make_install_special
-install -m755 tools/.libs/dbus-launch %{buildroot}/usr/bin/dbus-launch.x11
+pushd clr-build-special
+%make_install_special  || :
 popd
-## install_macro_build_special end
 pushd clr-build
 %make_install
 popd
 
 %files
 %defattr(-,root,root,-)
+
+%files autostart
+%defattr(-,root,root,-)
+/usr/usr/lib/systemd/system/multi-user.target.wants/dbus.service
+/usr/usr/lib/systemd/system/sockets.target.wants/dbus.socket
+
+%files bin
+%defattr(-,root,root,-)
+/usr/bin/dbus-cleanup-sockets
+/usr/bin/dbus-daemon
+/usr/bin/dbus-launch
+/usr/bin/dbus-monitor
+/usr/bin/dbus-run-session
+/usr/bin/dbus-send
+/usr/bin/dbus-test-tool
+/usr/bin/dbus-update-activation-environment
+/usr/bin/dbus-uuidgen
+
+%files data
+%defattr(-,root,root,-)
+/usr/share/dbus-1/session.conf
+/usr/share/dbus-1/system.conf
+
+%files dev
+%defattr(-,root,root,-)
+/usr/include/dbus-1.0/dbus/dbus-address.h
+/usr/include/dbus-1.0/dbus/dbus-bus.h
+/usr/include/dbus-1.0/dbus/dbus-connection.h
+/usr/include/dbus-1.0/dbus/dbus-errors.h
+/usr/include/dbus-1.0/dbus/dbus-macros.h
+/usr/include/dbus-1.0/dbus/dbus-memory.h
+/usr/include/dbus-1.0/dbus/dbus-message.h
+/usr/include/dbus-1.0/dbus/dbus-misc.h
+/usr/include/dbus-1.0/dbus/dbus-pending-call.h
+/usr/include/dbus-1.0/dbus/dbus-protocol.h
+/usr/include/dbus-1.0/dbus/dbus-server.h
+/usr/include/dbus-1.0/dbus/dbus-shared.h
+/usr/include/dbus-1.0/dbus/dbus-signature.h
+/usr/include/dbus-1.0/dbus/dbus-syntax.h
+/usr/include/dbus-1.0/dbus/dbus-threads.h
+/usr/include/dbus-1.0/dbus/dbus-types.h
+/usr/include/dbus-1.0/dbus/dbus.h
+/usr/lib32/dbus-1.0/include/dbus/dbus-arch-deps.h
+/usr/lib64/cmake/DBus1/DBus1Config.cmake
+/usr/lib64/cmake/DBus1/DBus1ConfigVersion.cmake
+/usr/lib64/dbus-1.0/include/dbus/dbus-arch-deps.h
+/usr/lib64/pkgconfig/dbus-1.pc
+
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/cmake/DBus1/DBus1Config.cmake
+/usr/lib32/cmake/DBus1/DBus1ConfigVersion.cmake
+/usr/lib32/pkgconfig/32dbus-1.pc
+/usr/lib32/pkgconfig/dbus-1.pc
+
+%files doc
+%defattr(0644,root,root,0755)
+%doc /usr/share/doc/dbus/*
+
+%files lib
+%defattr(-,root,root,-)
+/usr/lib64/libdbus-1.so
+/usr/lib64/libdbus-1.so.3
+/usr/lib64/libdbus-1.so.3.29.0
+
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/libdbus-1.so
+/usr/lib32/libdbus-1.so.3
+/usr/lib32/libdbus-1.so.3.29.0
+
+%files libexec
+%defattr(-,root,root,-)
+%attr(4750,root,messagebus) /usr/libexec/dbus-daemon-launch-helper
+
+%files services
+%defattr(-,root,root,-)
+%exclude /usr/usr/lib/systemd/system/multi-user.target.wants/dbus.service
+%exclude /usr/usr/lib/systemd/system/sockets.target.wants/dbus.socket
+/usr/lib/systemd/system/dbus.service
+/usr/lib/systemd/system/dbus.socket
+/usr/lib/systemd/user/dbus.service
+/usr/lib/systemd/user/dbus.socket
+/usr/usr/lib/systemd/user/sockets.target.wants/dbus.socket
