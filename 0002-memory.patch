@@ -1,7 +1,7 @@
-From ab15609172e105d5e400eaa8825c9eb9fe49e603 Mon Sep 17 00:00:00 2001
+From b25fad26789c120649794bbc796b1cf45a083f00 Mon Sep 17 00:00:00 2001
 From: Francisco Boni <boboniboni@gmail.com>
 Date: Mon, 6 Dec 2021 10:56:54 -0300
-Subject: [PATCH 2/5] memory
+Subject: [PATCH 2/6] memory
 
 ---
  dbus/dbus-mainloop.c | 5 ++++-

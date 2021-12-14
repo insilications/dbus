@@ -1,7 +1,7 @@
-From 11d04f30cf00cd04992516baaf0f25025be33144 Mon Sep 17 00:00:00 2001
+From 6a36860648a882b2a16f6e9995ebdb3974e275ac Mon Sep 17 00:00:00 2001
 From: Francisco Boni <boboniboni@gmail.com>
 Date: Sat, 11 Dec 2021 20:18:35 -0300
-Subject: [PATCH 5/5] unset DBUS_FATAL_WARNINGS DBUS_SESSION_BUS_ADDRESS
+Subject: [PATCH 5/6] unset DBUS_FATAL_WARNINGS DBUS_SESSION_BUS_ADDRESS
 
 ---
  cmake/modules/Macros.cmake | 2 --

@@ -1,0 +1,25 @@
+From 8658bac011c637372dd78bb6072815672f8b15d9 Mon Sep 17 00:00:00 2001
+From: Francisco Boni <boboniboni@gmail.com>
+Date: Tue, 14 Dec 2021 04:22:26 -0300
+Subject: [PATCH 6/6] Allow BUILD_SHARED_LIBS to decide
+
+---
+ dbus/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dbus/CMakeLists.txt b/dbus/CMakeLists.txt
+index e9203ca6..222a1782 100644
+--- a/dbus/CMakeLists.txt
++++ b/dbus/CMakeLists.txt
+@@ -262,7 +262,7 @@ find_library(LIBRT rt)
+ find_library(LIBSOCKET socket)
+ 
+ ### Client library
+-add_library(dbus-1 SHARED
++add_library(dbus-1
+     ${libdbus_SOURCES}
+     ${libdbus_HEADERS}
+ )
+-- 
+2.34.1
+
