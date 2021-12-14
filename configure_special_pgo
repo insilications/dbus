@@ -2,8 +2,8 @@
 --disable-xml-docs
 --disable-Werror
 --enable-qt-help=no
---disable-shared
---enable-static
+--enable-shared
+--disable-static
 --enable-systemd
 --enable-user-session
 --enable-epoll

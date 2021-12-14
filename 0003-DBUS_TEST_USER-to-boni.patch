@@ -1,7 +1,7 @@
 From 8b6be3cc291d1711b69503709dec7dd15da00068 Mon Sep 17 00:00:00 2001
 From: Francisco Boni <boboniboni@gmail.com>
 Date: Sat, 11 Dec 2021 19:25:08 -0300
-Subject: [PATCH 3/6] DBUS_TEST_USER to boni
+Subject: [PATCH 3/5] DBUS_TEST_USER to boni
 
 ---
  CMakeLists.txt | 2 +-

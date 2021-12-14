@@ -1,7 +1,7 @@
 From 0a86bbac2ea3f0a856c4899c52e2a2e19d905f9e Mon Sep 17 00:00:00 2001
 From: Francisco Boni <boboniboni@gmail.com>
 Date: Mon, 6 Dec 2021 10:56:22 -0300
-Subject: [PATCH 1/6] malloc trim
+Subject: [PATCH 1/5] malloc trim
 
 ---
  bus/main.c | 8 ++++++++
