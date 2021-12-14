@@ -5,12 +5,13 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.18
-Release  : 564
+Release  : 567
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.18.tar.gz
 Summary  : Free desktop message bus
 Group    : Development/Tools
 License  : AFL-2.1 GPL-2.0+
+BuildRequires : buildreq-cmake
 BuildRequires : dbus-dev
 BuildRequires : dbus-glib
 BuildRequires : dbus-python
@@ -79,6 +80,8 @@ BuildRequires : util-linux
 BuildRequires : util-linux-dev
 BuildRequires : util-linux-staticdev
 BuildRequires : xmlto
+BuildRequires : xorg-server
+BuildRequires : xorg-server-dev
 BuildRequires : xvfb-run
 BuildRequires : xvfbwrapper
 BuildRequires : zlib-dev
@@ -125,7 +128,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1639471510
+export SOURCE_DATE_EPOCH=1639473190
 export GCC_IGNORE_WERROR=1
 ## altflags_pgo content
 ## pgo generate
@@ -230,9 +233,10 @@ export LIBS="${LIBS_GENERATE}"
 --enable-systemd \
 --enable-user-session \
 --enable-epoll \
---sysconfdir=/usr/share \
+--sysconfdir=/etc2 \
 --localstatedir=/var \
 --runstatedir=/run \
+--enable-x11-autolaunch \
 --with-systemdunitdir=/usr/lib/systemd/system \
 --with-system-socket=/run/dbus/system_bus_socket \
 --with-system-pid-file=/run/dbus/pid \
@@ -278,9 +282,10 @@ export LIBS="${LIBS_USE}"
 --enable-systemd \
 --enable-user-session \
 --enable-epoll \
---sysconfdir=/usr/share \
+--sysconfdir=/etc2 \
 --localstatedir=/var \
 --runstatedir=/run \
+--enable-x11-autolaunch \
 --with-systemdunitdir=/usr/lib/systemd/system \
 --with-system-socket=/run/dbus/system_bus_socket \
 --with-system-pid-file=/run/dbus/pid \
@@ -440,9 +445,10 @@ export LIBS="${LIBS_GENERATE}"
 --enable-systemd \
 --enable-user-session \
 --enable-epoll \
---sysconfdir=/usr/share \
+--sysconfdir=/etc2 \
 --localstatedir=/var \
 --runstatedir=/run \
+--enable-x11-autolaunch \
 --with-systemdunitdir=/usr/lib/systemd/system \
 --with-system-socket=/run/dbus/system_bus_socket \
 --with-system-pid-file=/run/dbus/pid \
@@ -488,9 +494,10 @@ export LIBS="${LIBS_USE}"
 --enable-systemd \
 --enable-user-session \
 --enable-epoll \
---sysconfdir=/usr/share \
+--sysconfdir=/etc2 \
 --localstatedir=/var \
 --runstatedir=/run \
+--enable-x11-autolaunch \
 --with-systemdunitdir=/usr/lib/systemd/system \
 --with-system-socket=/run/dbus/system_bus_socket \
 --with-system-pid-file=/run/dbus/pid \
@@ -506,7 +513,7 @@ fi
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1639471510
+export SOURCE_DATE_EPOCH=1639473190
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
@@ -527,6 +534,14 @@ pushd ../build-special/
 %make_install_special
 popd
 %make_install
+## install_append content
+rm -rf %{buildroot}/etc2
+
+sed -i 's/etc2/etc/g' %{buildroot}/usr/share/dbus-1/system.conf
+sed -i 's/etc2/etc/g' %{buildroot}/usr/share/dbus-1/session.conf
+
+find %{buildroot}/usr/lib{32,64}/pkgconfig -type f -name '*.pc' -exec sed -i 's/etc2/etc/g' {} \;
+## install_append end
 
 %files
 %defattr(-,root,root,-)

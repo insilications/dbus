@@ -45,6 +45,8 @@ util-linux
 util-linux-dev
 util-linux-staticdev
 xmlto
+xorg-server
+xorg-server-dev
 xvfbwrapper
 xvfb-run
 zlib-dev
