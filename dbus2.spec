@@ -5,12 +5,19 @@
 %define keepstatic 1
 Name     : dbus
 Version  : 1.13.20
-Release  : 575
+Release  : 574
 URL      : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.20.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/dbus/dbus-v1.13.20.tar.gz
 Summary  : Free desktop message bus
 Group    : Development/Tools
 License  : AFL-2.1 GPL-2.0+
+Requires: dbus-autostart = %{version}-%{release}
+Requires: dbus-bin = %{version}-%{release}
+Requires: dbus-config = %{version}-%{release}
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-lib = %{version}-%{release}
+Requires: dbus-libexec = %{version}-%{release}
+Requires: dbus-services = %{version}-%{release}
 BuildRequires : dbus-dev
 BuildRequires : dbus-glib
 BuildRequires : dbus-python
@@ -106,6 +113,129 @@ Sections in this file describe:
 - options to the configure script
 - ABI stability policy
 
+%package autostart
+Summary: autostart components for the dbus package.
+Group: Default
+
+%description autostart
+autostart components for the dbus package.
+
+
+%package bin
+Summary: bin components for the dbus package.
+Group: Binaries
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-libexec = %{version}-%{release}
+Requires: dbus-config = %{version}-%{release}
+Requires: dbus-services = %{version}-%{release}
+
+%description bin
+bin components for the dbus package.
+
+
+%package config
+Summary: config components for the dbus package.
+Group: Default
+
+%description config
+config components for the dbus package.
+
+
+%package data
+Summary: data components for the dbus package.
+Group: Data
+
+%description data
+data components for the dbus package.
+
+
+%package dev
+Summary: dev components for the dbus package.
+Group: Development
+Requires: dbus-lib = %{version}-%{release}
+Requires: dbus-bin = %{version}-%{release}
+Requires: dbus-data = %{version}-%{release}
+Provides: dbus-devel = %{version}-%{release}
+Requires: dbus = %{version}-%{release}
+
+%description dev
+dev components for the dbus package.
+
+
+%package dev32
+Summary: dev32 components for the dbus package.
+Group: Default
+Requires: dbus-lib32 = %{version}-%{release}
+Requires: dbus-bin = %{version}-%{release}
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-dev = %{version}-%{release}
+
+%description dev32
+dev32 components for the dbus package.
+
+
+%package doc
+Summary: doc components for the dbus package.
+Group: Documentation
+
+%description doc
+doc components for the dbus package.
+
+
+%package lib
+Summary: lib components for the dbus package.
+Group: Libraries
+Requires: dbus-data = %{version}-%{release}
+Requires: dbus-libexec = %{version}-%{release}
+
+%description lib
+lib components for the dbus package.
+
+
+%package lib32
+Summary: lib32 components for the dbus package.
+Group: Default
+Requires: dbus-data = %{version}-%{release}
+
+%description lib32
+lib32 components for the dbus package.
+
+
+%package libexec
+Summary: libexec components for the dbus package.
+Group: Default
+Requires: dbus-config = %{version}-%{release}
+
+%description libexec
+libexec components for the dbus package.
+
+
+%package services
+Summary: services components for the dbus package.
+Group: Systemd services
+
+%description services
+services components for the dbus package.
+
+
+%package staticdev
+Summary: staticdev components for the dbus package.
+Group: Default
+Requires: dbus-dev = %{version}-%{release}
+
+%description staticdev
+staticdev components for the dbus package.
+
+
+%package tests
+Summary: tests components for the dbus package.
+Group: Default
+Requires: dbus = %{version}-%{release}
+
+%description tests
+tests components for the dbus package.
+
+
 %prep
 %setup -q -n dbus
 cd %{_builddir}/dbus
@@ -127,7 +257,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1641885545
+export SOURCE_DATE_EPOCH=1641883732
 export GCC_IGNORE_WERROR=1
 ## altflags_pgo content
 ## pgo generate
@@ -215,15 +345,15 @@ export FONTCONFIG_PATH=/usr/share/defaults/fonts
 sd -r '\s--dirty\s' ' ' .
 sd -r 'git describe' 'git describe --abbrev=0' .
 
-echo PGO Phase 2
-export CFLAGS="${CFLAGS_USE}"
-export CXXFLAGS="${CXXFLAGS_USE}"
-export FFLAGS="${FFLAGS_USE}"
-export FCFLAGS="${FCFLAGS_USE}"
-export LDFLAGS="${LDFLAGS_USE}"
-export ASMFLAGS="${ASMFLAGS_USE}"
-export LIBS="${LIBS_USE}"
- %autogen --enable-debug=no \
+echo PGO Phase 1
+export CFLAGS="${CFLAGS_GENERATE}"
+export CXXFLAGS="${CXXFLAGS_GENERATE}"
+export FFLAGS="${FFLAGS_GENERATE}"
+export FCFLAGS="${FCFLAGS_GENERATE}"
+export LDFLAGS="${LDFLAGS_GENERATE}"
+export ASMFLAGS="${ASMFLAGS_GENERATE}"
+export LIBS="${LIBS_GENERATE}"
+%autogen  --enable-debug=no \
 --disable-xml-docs \
 --disable-Werror \
 --enable-qt-help=no \
@@ -243,9 +373,21 @@ export LIBS="${LIBS_USE}"
 --with-test-user=boni \
 --disable-asserts \
 --disable-checks \
---disable-tests \
---disable-installed-tests
+--enable-tests \
+--enable-installed-tests
 make  %{?_smp_mflags}    V=1 VERBOSE=1
+## profile_payload start
+unset LD_LIBRARY_PATH
+unset LIBRARY_PATH
+unset DBUS_SESSION_BUS_ADDRESS
+export LD_LIBRARY_PATH="/builddir/build/BUILD/build-special/dbus/.libs:/usr/nvidia/lib64:/usr/nvidia/lib64/gbm:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/dri:/usr/lib64:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
+export LIBRARY_PATH="/builddir/build/BUILD/build-special/dbus/.libs:/usr/nvidia/lib64:/usr/nvidia/lib64/gbm:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/dri:/usr/lib64:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
+# ctest --parallel 1 --verbose --progress || :
+make -j1 check V=1 VERBOSE=1 || :
+export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+export LD_LIBRARY_PATH="/usr/local/nvidia/lib64:/usr/local/nvidia/lib64/gbm:/usr/local/nvidia/lib64/vdpau:/usr/local/nvidia/lib64/xorg/modules/drivers:/usr/local/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/dri:/usr/lib64:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/local/nvidia/lib32:/usr/local/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
+export LIBRARY_PATH="/usr/local/nvidia/lib64:/usr/local/nvidia/lib64/gbm:/usr/local/nvidia/lib64/vdpau:/usr/local/nvidia/lib64/xorg/modules/drivers:/usr/local/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/dri:/usr/lib64:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/local/nvidia/lib32:/usr/local/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
+## profile_payload end
 pushd ../build32/
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -374,15 +516,15 @@ export FONTCONFIG_PATH=/usr/share/defaults/fonts
 sd -r '\s--dirty\s' ' ' .
 sd -r 'git describe' 'git describe --abbrev=0' .
 
-echo PGO Phase 2
-export CFLAGS="${CFLAGS_USE}"
-export CXXFLAGS="${CXXFLAGS_USE}"
-export FFLAGS="${FFLAGS_USE}"
-export FCFLAGS="${FCFLAGS_USE}"
-export LDFLAGS="${LDFLAGS_USE}"
-export ASMFLAGS="${ASMFLAGS_USE}"
-export LIBS="${LIBS_USE}"
- %autogen --enable-debug=no \
+echo PGO Phase 1
+export CFLAGS="${CFLAGS_GENERATE}"
+export CXXFLAGS="${CXXFLAGS_GENERATE}"
+export FFLAGS="${FFLAGS_GENERATE}"
+export FCFLAGS="${FCFLAGS_GENERATE}"
+export LDFLAGS="${LDFLAGS_GENERATE}"
+export ASMFLAGS="${ASMFLAGS_GENERATE}"
+export LIBS="${LIBS_GENERATE}"
+%autogen --enable-debug=no \
 --disable-xml-docs \
 --disable-Werror \
 --enable-qt-help=no \
@@ -402,12 +544,24 @@ export LIBS="${LIBS_USE}"
 --with-test-user=boni \
 --disable-asserts \
 --disable-checks \
---disable-tests \
---disable-installed-tests
+--enable-tests \
+--enable-installed-tests
 make  %{?_smp_mflags}    V=1 VERBOSE=1
+## profile_payload start
+unset LD_LIBRARY_PATH
+unset LIBRARY_PATH
+unset DBUS_SESSION_BUS_ADDRESS
+export LD_LIBRARY_PATH="/builddir/build/BUILD/build-special/dbus/.libs:/usr/nvidia/lib64:/usr/nvidia/lib64/gbm:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/dri:/usr/lib64:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
+export LIBRARY_PATH="/builddir/build/BUILD/build-special/dbus/.libs:/usr/nvidia/lib64:/usr/nvidia/lib64/gbm:/usr/nvidia/lib64/vdpau:/usr/nvidia/lib64/xorg/modules/drivers:/usr/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/dri:/usr/lib64:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/nvidia/lib32:/usr/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
+# ctest --parallel 1 --verbose --progress || :
+make -j1 check V=1 VERBOSE=1 || :
+export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+export LD_LIBRARY_PATH="/usr/local/nvidia/lib64:/usr/local/nvidia/lib64/gbm:/usr/local/nvidia/lib64/vdpau:/usr/local/nvidia/lib64/xorg/modules/drivers:/usr/local/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/dri:/usr/lib64:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/local/nvidia/lib32:/usr/local/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
+export LIBRARY_PATH="/usr/local/nvidia/lib64:/usr/local/nvidia/lib64/gbm:/usr/local/nvidia/lib64/vdpau:/usr/local/nvidia/lib64/xorg/modules/drivers:/usr/local/nvidia/lib64/xorg/modules/extensions:/usr/local/cuda/lib64:/usr/lib64/haswell:/usr/lib64/dri:/usr/lib64:/usr/lib:/aot/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:/aot/intel/oneapi/compiler/latest/linux/lib:/aot/intel/oneapi/mkl/latest/lib/intel64:/aot/intel/oneapi/tbb/latest/lib/intel64/gcc4.8:/usr/share:/usr/lib64/wine:/usr/local/nvidia/lib32:/usr/local/nvidia/lib32/vdpau:/usr/lib32:/usr/lib32/wine"
+## profile_payload end
 
 %install
-export SOURCE_DATE_EPOCH=1641885545
+export SOURCE_DATE_EPOCH=1641883732
 rm -rf %{buildroot}
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -529,13 +683,13 @@ export LIBVA_DRIVERS_PATH=/usr/lib64/dri
 export GTK_RC_FILES=/etc/gtk/gtkrc
 export FONTCONFIG_PATH=/usr/share/defaults/fonts
 ## altflags_pgo end
-export CFLAGS="${CFLAGS_USE}"
-export CXXFLAGS="${CXXFLAGS_USE}"
-export FFLAGS="${FFLAGS_USE}"
-export FCFLAGS="${FCFLAGS_USE}"
-export LDFLAGS="${LDFLAGS_USE}"
-export ASMFLAGS="${ASMFLAGS_USE}"
-export LIBS="${LIBS_USE}"
+export CFLAGS="${CFLAGS_GENERATE}"
+export CXXFLAGS="${CXXFLAGS_GENERATE}"
+export FFLAGS="${FFLAGS_GENERATE}"
+export FCFLAGS="${FCFLAGS_GENERATE}"
+export LDFLAGS="${LDFLAGS_GENERATE}"
+export ASMFLAGS="${ASMFLAGS_GENERATE}"
+export LIBS="${LIBS_GENERATE}"
 pushd ../build-special/
 %make_install_special
 popd
@@ -623,13 +777,13 @@ export LIBVA_DRIVERS_PATH=/usr/lib64/dri
 export GTK_RC_FILES=/etc/gtk/gtkrc
 export FONTCONFIG_PATH=/usr/share/defaults/fonts
 ## altflags_pgo end
-export CFLAGS="${CFLAGS_USE}"
-export CXXFLAGS="${CXXFLAGS_USE}"
-export FFLAGS="${FFLAGS_USE}"
-export FCFLAGS="${FCFLAGS_USE}"
-export LDFLAGS="${LDFLAGS_USE}"
-export ASMFLAGS="${ASMFLAGS_USE}"
-export LIBS="${LIBS_USE}"
+export CFLAGS="${CFLAGS_GENERATE}"
+export CXXFLAGS="${CXXFLAGS_GENERATE}"
+export FFLAGS="${FFLAGS_GENERATE}"
+export FCFLAGS="${FCFLAGS_GENERATE}"
+export LDFLAGS="${LDFLAGS_GENERATE}"
+export ASMFLAGS="${ASMFLAGS_GENERATE}"
+export LIBS="${LIBS_GENERATE}"
 %make_install
 ## install_append content
 rm -rf %{buildroot}/etc2
@@ -642,3 +796,326 @@ find %{buildroot}/usr/lib{32,64}/pkgconfig -type f -name '*.pc' -exec sed -i 's/
 
 %files
 %defattr(-,root,root,-)
+
+%files autostart
+%defattr(-,root,root,-)
+/usr/lib/systemd/system/multi-user.target.wants/dbus.service
+/usr/lib/systemd/system/sockets.target.wants/dbus.socket
+
+%files bin
+%defattr(-,root,root,-)
+/usr/bin/dbus-cleanup-sockets
+/usr/bin/dbus-daemon
+/usr/bin/dbus-launch
+/usr/bin/dbus-monitor
+/usr/bin/dbus-run-session
+/usr/bin/dbus-send
+/usr/bin/dbus-test-tool
+/usr/bin/dbus-update-activation-environment
+/usr/bin/dbus-uuidgen
+
+%files config
+%defattr(-,root,root,-)
+/usr/lib/sysusers.d/dbus.conf
+/usr/lib/tmpfiles.d/dbus.conf
+
+%files data
+%defattr(-,root,root,-)
+/usr/share/dbus-1/session.conf
+/usr/share/dbus-1/system.conf
+/usr/share/xml/dbus-1/busconfig.dtd
+/usr/share/xml/dbus-1/introspect.dtd
+
+%files dev
+%defattr(-,root,root,-)
+/usr/include/dbus-1.0/dbus/dbus-address.h
+/usr/include/dbus-1.0/dbus/dbus-bus.h
+/usr/include/dbus-1.0/dbus/dbus-connection.h
+/usr/include/dbus-1.0/dbus/dbus-errors.h
+/usr/include/dbus-1.0/dbus/dbus-macros.h
+/usr/include/dbus-1.0/dbus/dbus-memory.h
+/usr/include/dbus-1.0/dbus/dbus-message.h
+/usr/include/dbus-1.0/dbus/dbus-misc.h
+/usr/include/dbus-1.0/dbus/dbus-pending-call.h
+/usr/include/dbus-1.0/dbus/dbus-protocol.h
+/usr/include/dbus-1.0/dbus/dbus-server.h
+/usr/include/dbus-1.0/dbus/dbus-shared.h
+/usr/include/dbus-1.0/dbus/dbus-signature.h
+/usr/include/dbus-1.0/dbus/dbus-syntax.h
+/usr/include/dbus-1.0/dbus/dbus-threads.h
+/usr/include/dbus-1.0/dbus/dbus-types.h
+/usr/include/dbus-1.0/dbus/dbus.h
+/usr/lib32/dbus-1.0/include/dbus/dbus-arch-deps.h
+/usr/lib64/cmake/DBus1/DBus1Config.cmake
+/usr/lib64/cmake/DBus1/DBus1ConfigVersion.cmake
+/usr/lib64/dbus-1.0/include/dbus/dbus-arch-deps.h
+/usr/lib64/libdbus-1.la
+/usr/lib64/pkgconfig/dbus-1.pc
+
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/cmake/DBus1/DBus1Config.cmake
+/usr/lib32/cmake/DBus1/DBus1ConfigVersion.cmake
+/usr/lib32/libdbus-1.la
+/usr/lib32/pkgconfig/32dbus-1.pc
+/usr/lib32/pkgconfig/dbus-1.pc
+
+%files doc
+%defattr(0644,root,root,0755)
+%doc /usr/share/doc/dbus/*
+
+%files lib
+%defattr(-,root,root,-)
+/usr/lib64/libdbus-1.so
+/usr/lib64/libdbus-1.so.3
+/usr/lib64/libdbus-1.so.3.30.0
+
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/libdbus-1.so
+/usr/lib32/libdbus-1.so.3
+/usr/lib32/libdbus-1.so.3.30.0
+
+%files libexec
+%defattr(-,root,root,-)
+%attr(4750,root,messagebus) /usr/libexec/dbus-daemon-launch-helper
+
+%files services
+%defattr(-,root,root,-)
+%exclude /usr/lib/systemd/system/multi-user.target.wants/dbus.service
+%exclude /usr/lib/systemd/system/sockets.target.wants/dbus.socket
+/usr/lib/systemd/system/dbus.service
+/usr/lib/systemd/system/dbus.socket
+/usr/lib/systemd/user/dbus.service
+/usr/lib/systemd/user/dbus.socket
+/usr/lib/systemd/user/sockets.target.wants/dbus.socket
+
+%files staticdev
+%defattr(-,root,root,-)
+/usr/lib64/libdbus-1.a
+
+%files tests
+%defattr(-,root,root,-)
+/usr/libexec/installed-tests/dbus/data/auth/anonymous-client-successful.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/anonymous-server-successful.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/cancel.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/client-out-of-mechanisms.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/cookie-sha1-username.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/cookie-sha1.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/external-auto.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/external-failed.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/external-root.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/external-silly.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/external-successful.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/external-username.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/extra-bytes.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/fail-after-n-attempts.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/fallback.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/invalid-command-client.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/invalid-command.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/invalid-hex-encoding.auth-script
+/usr/libexec/installed-tests/dbus/data/auth/mechanisms.auth-script
+/usr/libexec/installed-tests/dbus/data/dbus-installed-tests.aaprofile
+/usr/libexec/installed-tests/dbus/data/equiv-config-files/basic/basic-1.conf
+/usr/libexec/installed-tests/dbus/data/equiv-config-files/basic/basic-2.conf
+/usr/libexec/installed-tests/dbus/data/equiv-config-files/basic/basic.d/basic.conf
+/usr/libexec/installed-tests/dbus/data/equiv-config-files/entities/basic.d/basic.conf
+/usr/libexec/installed-tests/dbus/data/equiv-config-files/entities/entities-1.conf
+/usr/libexec/installed-tests/dbus/data/equiv-config-files/entities/entities-2.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/apparmor-bad-attribute.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/apparmor-bad-mode.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/bad-attribute-2.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/bad-attribute.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/bad-element.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/bad-limit.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/badselinux-1.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/badselinux-2.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/circular-1.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/circular-2.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/circular-3.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/double-attribute.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/impossible-send.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/limit-no-name.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/ludicrous-limit.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/negative-limit.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/non-numeric-limit.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/not-well-formed.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/policy-bad-at-console.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/policy-bad-attribute.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/policy-bad-context.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/policy-bad-rule-attribute.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/policy-contradiction.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/policy-member-no-path.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/policy-mixed.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/policy-no-attributes.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/policy-no-rule-attribute.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/send-and-receive.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/truncated-file.conf
+/usr/libexec/installed-tests/dbus/data/invalid-config-files/unknown-limit.conf
+/usr/libexec/installed-tests/dbus/data/invalid-messages/boolean-has-no-value.message-raw
+/usr/libexec/installed-tests/dbus/data/invalid-service-files-system/org.freedesktop.DBus.TestSuiteNoExec.service
+/usr/libexec/installed-tests/dbus/data/invalid-service-files-system/org.freedesktop.DBus.TestSuiteNoService.service
+/usr/libexec/installed-tests/dbus/data/invalid-service-files-system/org.freedesktop.DBus.TestSuiteNoUser.service
+/usr/libexec/installed-tests/dbus/data/sha-1/Readme.txt
+/usr/libexec/installed-tests/dbus/data/sha-1/bit-hashes.sha1
+/usr/libexec/installed-tests/dbus/data/sha-1/bit-messages.sha1
+/usr/libexec/installed-tests/dbus/data/sha-1/byte-hashes.sha1
+/usr/libexec/installed-tests/dbus/data/sha-1/byte-messages.sha1
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.ReceiveDenied.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.ReceiveDeniedByAppArmorLabel.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.SendDenied.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.SendDeniedByAppArmorLabel.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.SendDeniedByAppArmorName.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.SendDeniedByNonexistentAppArmorLabel.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.SendPrefixDenied.SendPrefixAllowed.internal.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.SendPrefixDenied.internal.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.SendPrefixDenied.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.SystemdActivatable1.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.SystemdActivatable2.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/com.example.SystemdActivatable3.service
+/usr/libexec/installed-tests/dbus/data/systemd-activation/org.freedesktop.systemd1.service
+/usr/libexec/installed-tests/dbus/data/valid-config-files-system/debug-allow-all-fail.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files-system/debug-allow-all-pass.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files-system/many-rules.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files-system/system.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files-system/system.d/test.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files-system/tmp-session-like-system.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/as-another-user.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/basic.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/basic.d/basic.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/check-own-rules.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/count-fds.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/debug-allow-all-sha1.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/debug-allow-all.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/entities.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/finite-timeout.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/forbidding.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/incoming-limit.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/limit-containers.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/listen-unix-runtime.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/many-rules.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/max-completed-connections.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/max-connections-per-user.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/max-containers.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/max-match-rules-per-connection.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/max-names-per-connection.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/max-replies-per-connection.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/minimal.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/multi-user.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/pending-fd-timeout.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/send-destination-prefix-rules.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/session.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/standard-session-dirs.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/systemd-activation.conf
+/usr/libexec/installed-tests/dbus/data/valid-config-files/tmp-session.conf
+/usr/libexec/installed-tests/dbus/data/valid-service-files-system/org.freedesktop.DBus.TestSuiteEchoService.service
+/usr/libexec/installed-tests/dbus/data/valid-service-files-system/org.freedesktop.DBus.TestSuiteSegfaultService.service
+/usr/libexec/installed-tests/dbus/data/valid-service-files-system/org.freedesktop.DBus.TestSuiteShellEchoServiceFail.service
+/usr/libexec/installed-tests/dbus/data/valid-service-files-system/org.freedesktop.DBus.TestSuiteShellEchoServiceSuccess.service
+/usr/libexec/installed-tests/dbus/data/valid-service-files/org.freedesktop.DBus.TestSuite.PrivServer.service
+/usr/libexec/installed-tests/dbus/data/valid-service-files/org.freedesktop.DBus.TestSuiteEchoService.service
+/usr/libexec/installed-tests/dbus/data/valid-service-files/org.freedesktop.DBus.TestSuiteForkingEchoService.service
+/usr/libexec/installed-tests/dbus/data/valid-service-files/org.freedesktop.DBus.TestSuiteSegfaultService.service
+/usr/libexec/installed-tests/dbus/data/valid-service-files/org.freedesktop.DBus.TestSuiteShellEchoServiceFail.service
+/usr/libexec/installed-tests/dbus/data/valid-service-files/org.freedesktop.DBus.TestSuiteShellEchoServiceSuccess.service
+/usr/libexec/installed-tests/dbus/integration/transient-services.sh
+/usr/libexec/installed-tests/dbus/manual-authz
+/usr/libexec/installed-tests/dbus/manual-backtrace
+/usr/libexec/installed-tests/dbus/manual-dir-iter
+/usr/libexec/installed-tests/dbus/manual-tcp
+/usr/libexec/installed-tests/dbus/manual-test-thread-blocking
+/usr/libexec/installed-tests/dbus/test-apparmor-activation
+/usr/libexec/installed-tests/dbus/test-apparmor-activation.sh
+/usr/libexec/installed-tests/dbus/test-assertions
+/usr/libexec/installed-tests/dbus/test-atomic
+/usr/libexec/installed-tests/dbus/test-containers
+/usr/libexec/installed-tests/dbus/test-corrupt
+/usr/libexec/installed-tests/dbus/test-dbus-daemon
+/usr/libexec/installed-tests/dbus/test-dbus-daemon-eavesdrop
+/usr/libexec/installed-tests/dbus/test-dbus-daemon-fork.sh
+/usr/libexec/installed-tests/dbus/test-dbus-launch-eval.sh
+/usr/libexec/installed-tests/dbus/test-dbus-launch-x11.sh
+/usr/libexec/installed-tests/dbus/test-desktop-file
+/usr/libexec/installed-tests/dbus/test-fdpass
+/usr/libexec/installed-tests/dbus/test-hash
+/usr/libexec/installed-tests/dbus/test-header-fields
+/usr/libexec/installed-tests/dbus/test-loopback
+/usr/libexec/installed-tests/dbus/test-marshal
+/usr/libexec/installed-tests/dbus/test-message
+/usr/libexec/installed-tests/dbus/test-misc-internals
+/usr/libexec/installed-tests/dbus/test-monitor
+/usr/libexec/installed-tests/dbus/test-printf
+/usr/libexec/installed-tests/dbus/test-refs
+/usr/libexec/installed-tests/dbus/test-relay
+/usr/libexec/installed-tests/dbus/test-sd-activation
+/usr/libexec/installed-tests/dbus/test-server-oom
+/usr/libexec/installed-tests/dbus/test-service
+/usr/libexec/installed-tests/dbus/test-shell
+/usr/libexec/installed-tests/dbus/test-sleep-forever
+/usr/libexec/installed-tests/dbus/test-syntax
+/usr/libexec/installed-tests/dbus/test-sysdeps
+/usr/libexec/installed-tests/dbus/test-syslog
+/usr/libexec/installed-tests/dbus/test-uid-permissions
+/usr/libexec/installed-tests/dbus/test-variant
+/usr/share/installed-tests/dbus/integration/transient-services.sh.test
+/usr/share/installed-tests/dbus/integration/transient-services.sh_with_config.test
+/usr/share/installed-tests/dbus/test-apparmor-activation.sh.test
+/usr/share/installed-tests/dbus/test-apparmor-activation.sh_with_config.test
+/usr/share/installed-tests/dbus/test-assertions.test
+/usr/share/installed-tests/dbus/test-assertions_with_config.test
+/usr/share/installed-tests/dbus/test-atomic.test
+/usr/share/installed-tests/dbus/test-atomic_with_config.test
+/usr/share/installed-tests/dbus/test-containers.test
+/usr/share/installed-tests/dbus/test-containers_with_config.test
+/usr/share/installed-tests/dbus/test-corrupt.test
+/usr/share/installed-tests/dbus/test-corrupt_with_config.test
+/usr/share/installed-tests/dbus/test-dbus-daemon-eavesdrop.test
+/usr/share/installed-tests/dbus/test-dbus-daemon-eavesdrop_with_config.test
+/usr/share/installed-tests/dbus/test-dbus-daemon-fork.sh.test
+/usr/share/installed-tests/dbus/test-dbus-daemon-fork.sh_with_config.test
+/usr/share/installed-tests/dbus/test-dbus-daemon.test
+/usr/share/installed-tests/dbus/test-dbus-daemon_with_config.test
+/usr/share/installed-tests/dbus/test-dbus-launch-eval.sh.test
+/usr/share/installed-tests/dbus/test-dbus-launch-eval.sh_with_config.test
+/usr/share/installed-tests/dbus/test-dbus-launch-x11.sh.test
+/usr/share/installed-tests/dbus/test-dbus-launch-x11.sh_with_config.test
+/usr/share/installed-tests/dbus/test-desktop-file.test
+/usr/share/installed-tests/dbus/test-desktop-file_with_config.test
+/usr/share/installed-tests/dbus/test-fdpass.test
+/usr/share/installed-tests/dbus/test-fdpass_with_config.test
+/usr/share/installed-tests/dbus/test-hash.test
+/usr/share/installed-tests/dbus/test-hash_with_config.test
+/usr/share/installed-tests/dbus/test-header-fields.test
+/usr/share/installed-tests/dbus/test-header-fields_with_config.test
+/usr/share/installed-tests/dbus/test-loopback.test
+/usr/share/installed-tests/dbus/test-loopback_with_config.test
+/usr/share/installed-tests/dbus/test-marshal.test
+/usr/share/installed-tests/dbus/test-marshal_with_config.test
+/usr/share/installed-tests/dbus/test-message.test
+/usr/share/installed-tests/dbus/test-message_with_config.test
+/usr/share/installed-tests/dbus/test-misc-internals.test
+/usr/share/installed-tests/dbus/test-misc-internals_with_config.test
+/usr/share/installed-tests/dbus/test-monitor.test
+/usr/share/installed-tests/dbus/test-monitor_with_config.test
+/usr/share/installed-tests/dbus/test-printf.test
+/usr/share/installed-tests/dbus/test-printf_with_config.test
+/usr/share/installed-tests/dbus/test-refs.test
+/usr/share/installed-tests/dbus/test-refs_with_config.test
+/usr/share/installed-tests/dbus/test-relay.test
+/usr/share/installed-tests/dbus/test-relay_with_config.test
+/usr/share/installed-tests/dbus/test-sd-activation.test
+/usr/share/installed-tests/dbus/test-sd-activation_with_config.test
+/usr/share/installed-tests/dbus/test-server-oom.test
+/usr/share/installed-tests/dbus/test-server-oom_with_config.test
+/usr/share/installed-tests/dbus/test-shell.test
+/usr/share/installed-tests/dbus/test-shell_with_config.test
+/usr/share/installed-tests/dbus/test-syntax.test
+/usr/share/installed-tests/dbus/test-syntax_with_config.test
+/usr/share/installed-tests/dbus/test-sysdeps.test
+/usr/share/installed-tests/dbus/test-sysdeps_with_config.test
+/usr/share/installed-tests/dbus/test-syslog.test
+/usr/share/installed-tests/dbus/test-syslog_with_config.test
+/usr/share/installed-tests/dbus/test-uid-permissions.test
+/usr/share/installed-tests/dbus/test-uid-permissions_with_config.test
+/usr/share/installed-tests/dbus/test-variant.test
+/usr/share/installed-tests/dbus/test-variant_with_config.test

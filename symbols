@@ -1,5 +1,5 @@
 libdbus-1.so.3:LIBDBUS_1_3
-libdbus-1.so.3:LIBDBUS_PRIVATE_1.13.18
+libdbus-1.so.3:LIBDBUS_PRIVATE_1.13.21
 libdbus-1.so.3:_dbus_abort
 libdbus-1.so.3:_dbus_address_append_escaped
 libdbus-1.so.3:_dbus_append_user_from_current_process
@@ -30,6 +30,7 @@ libdbus-1.so.3:_dbus_close
 libdbus-1.so.3:_dbus_close_all
 libdbus-1.so.3:_dbus_close_socket
 libdbus-1.so.3:_dbus_concat_dir_and_file
+libdbus-1.so.3:_dbus_connection_get_address
 libdbus-1.so.3:_dbus_connection_get_credentials
 libdbus-1.so.3:_dbus_connection_get_linux_security_label
 libdbus-1.so.3:_dbus_connection_get_pending_fds_count
@@ -37,6 +38,7 @@ libdbus-1.so.3:_dbus_connection_get_stats
 libdbus-1.so.3:_dbus_connection_lock
 libdbus-1.so.3:_dbus_connection_ref_unlocked
 libdbus-1.so.3:_dbus_connection_set_pending_fds_function
+libdbus-1.so.3:_dbus_connection_test_get_locks
 libdbus-1.so.3:_dbus_connection_unlock
 libdbus-1.so.3:_dbus_connection_unref_unlocked
 libdbus-1.so.3:_dbus_create_directory
@@ -62,6 +64,7 @@ libdbus-1.so.3:_dbus_credentials_same_user
 libdbus-1.so.3:_dbus_credentials_take_unix_gids
 libdbus-1.so.3:_dbus_credentials_to_string_append
 libdbus-1.so.3:_dbus_credentials_unref
+libdbus-1.so.3:_dbus_data_slot_test
 libdbus-1.so.3:_dbus_delete_directory
 libdbus-1.so.3:_dbus_delete_file
 libdbus-1.so.3:_dbus_dup
@@ -79,6 +82,7 @@ libdbus-1.so.3:_dbus_flush_caches
 libdbus-1.so.3:_dbus_generate_random_ascii
 libdbus-1.so.3:_dbus_generate_uuid
 libdbus-1.so.3:_dbus_get_local_machine_uuid_encoded
+libdbus-1.so.3:_dbus_get_malloc_blocks_outstanding
 libdbus-1.so.3:_dbus_get_monotonic_time
 libdbus-1.so.3:_dbus_get_real_time
 libdbus-1.so.3:_dbus_get_tmpdir
@@ -122,6 +126,7 @@ libdbus-1.so.3:_dbus_header_set_field_basic
 libdbus-1.so.3:_dbus_homedir_from_current_process
 libdbus-1.so.3:_dbus_init_system_log
 libdbus-1.so.3:_dbus_is_a_number
+libdbus-1.so.3:_dbus_keyring_test
 libdbus-1.so.3:_dbus_list_alloc_link
 libdbus-1.so.3:_dbus_list_append
 libdbus-1.so.3:_dbus_list_append_link
@@ -156,10 +161,12 @@ libdbus-1.so.3:_dbus_lookup_user_bus
 libdbus-1.so.3:_dbus_marshal_byteswap
 libdbus-1.so.3:_dbus_marshal_read_uint32
 libdbus-1.so.3:_dbus_marshal_set_uint32
+libdbus-1.so.3:_dbus_marshal_test
 libdbus-1.so.3:_dbus_mem_pool_alloc
 libdbus-1.so.3:_dbus_mem_pool_dealloc
 libdbus-1.so.3:_dbus_mem_pool_free
 libdbus-1.so.3:_dbus_mem_pool_new
+libdbus-1.so.3:_dbus_memory_test
 libdbus-1.so.3:_dbus_message_get_unix_fds
 libdbus-1.so.3:_dbus_message_iter_get_args_valist
 libdbus-1.so.3:_dbus_message_loader_get_buffer
@@ -174,6 +181,7 @@ libdbus-1.so.3:_dbus_message_loader_return_buffer
 libdbus-1.so.3:_dbus_message_loader_return_unix_fds
 libdbus-1.so.3:_dbus_message_loader_unref
 libdbus-1.so.3:_dbus_message_remove_unknown_fields
+libdbus-1.so.3:_dbus_object_tree_test
 libdbus-1.so.3:_dbus_pending_call_new_unlocked
 libdbus-1.so.3:_dbus_pending_call_ref_unlocked
 libdbus-1.so.3:_dbus_pending_call_unref_and_unlock
@@ -198,6 +206,7 @@ libdbus-1.so.3:_dbus_server_ref_unlocked
 libdbus-1.so.3:_dbus_server_toggle_all_watches
 libdbus-1.so.3:_dbus_server_unref_unlocked
 libdbus-1.so.3:_dbus_set_error_valist
+libdbus-1.so.3:_dbus_sha_compute
 libdbus-1.so.3:_dbus_sleep_milliseconds
 libdbus-1.so.3:_dbus_socketpair
 libdbus-1.so.3:_dbus_split_paths_and_append
@@ -221,6 +230,8 @@ libdbus-1.so.3:_dbus_string_copy_data
 libdbus-1.so.3:_dbus_string_copy_len
 libdbus-1.so.3:_dbus_string_copy_to_buffer_with_nul
 libdbus-1.so.3:_dbus_string_delete
+libdbus-1.so.3:_dbus_string_delete_first_word
+libdbus-1.so.3:_dbus_string_delete_leading_blanks
 libdbus-1.so.3:_dbus_string_equal
 libdbus-1.so.3:_dbus_string_equal_c_str
 libdbus-1.so.3:_dbus_string_equal_len
@@ -259,6 +270,15 @@ libdbus-1.so.3:_dbus_string_tolower_ascii
 libdbus-1.so.3:_dbus_string_toupper_ascii
 libdbus-1.so.3:_dbus_string_validate_nul
 libdbus-1.so.3:_dbus_string_validate_utf8
+libdbus-1.so.3:_dbus_test_check_memleaks
+libdbus-1.so.3:_dbus_test_diag
+libdbus-1.so.3:_dbus_test_done_testing
+libdbus-1.so.3:_dbus_test_fatal
+libdbus-1.so.3:_dbus_test_not_ok
+libdbus-1.so.3:_dbus_test_ok
+libdbus-1.so.3:_dbus_test_oom_handling
+libdbus-1.so.3:_dbus_test_skip
+libdbus-1.so.3:_dbus_test_skip_all
 libdbus-1.so.3:_dbus_timeout_disable
 libdbus-1.so.3:_dbus_timeout_needs_restart
 libdbus-1.so.3:_dbus_timeout_new
