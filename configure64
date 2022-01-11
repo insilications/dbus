@@ -18,5 +18,5 @@
 --with-test-user=boni
 --disable-asserts
 --disable-checks
---enable-tests
---enable-installed-tests
+--disable-tests
+--disable-installed-tests

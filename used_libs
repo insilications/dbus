@@ -1,8 +1,4 @@
-ld-linux-x86-64.so.2
 libX11.so.6
 libc.so.6
 libexpat.so.1
-libgio-2.0.so.0
-libglib-2.0.so.0
-libgobject-2.0.so.0
 libsystemd.so.0
