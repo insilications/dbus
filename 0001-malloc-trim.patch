@@ -1,4 +1,4 @@
-From 0a86bbac2ea3f0a856c4899c52e2a2e19d905f9e Mon Sep 17 00:00:00 2001
+From caedb911dc69360a35fa9d2b4313fc54a936c5e8 Mon Sep 17 00:00:00 2001
 From: Francisco Boni <boboniboni@gmail.com>
 Date: Mon, 6 Dec 2021 10:56:22 -0300
 Subject: [PATCH 1/5] malloc trim
@@ -34,5 +34,5 @@ index 5f756d5c..eb63cb7f 100644
  
    bus_context_shutdown (context);
 -- 
-2.34.1
+2.36.0
 

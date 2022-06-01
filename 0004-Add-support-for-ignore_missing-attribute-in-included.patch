@@ -1,4 +1,4 @@
-From 11652a0a2b28cc090605513a2e264aa6c7aefb8d Mon Sep 17 00:00:00 2001
+From 0f282d1fa20bef9ab9f5d736a913aa5a095af669 Mon Sep 17 00:00:00 2001
 From: Francisco Boni <boboniboni@gmail.com>
 Date: Sat, 11 Dec 2021 20:05:39 -0300
 Subject: [PATCH 4/5] Add support for ignore_missing attribute in includedir
@@ -168,5 +168,5 @@ index 8e893065..332cbd48 100644
    <servicedir>/usr/share/foo</servicedir>
    <include ignore_missing="yes">nonexistent.conf</include>
 -- 
-2.34.1
+2.36.0
 

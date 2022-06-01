@@ -1,4 +1,4 @@
-From 8b6be3cc291d1711b69503709dec7dd15da00068 Mon Sep 17 00:00:00 2001
+From 0df31ac8b24cad9ae54e44eeb55e11170d543f08 Mon Sep 17 00:00:00 2001
 From: Francisco Boni <boboniboni@gmail.com>
 Date: Sat, 11 Dec 2021 19:25:08 -0300
 Subject: [PATCH 3/5] DBUS_TEST_USER to boni
@@ -8,12 +8,12 @@ Subject: [PATCH 3/5] DBUS_TEST_USER to boni
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 994f7197..3716ce7f 100644
+index 0914f07b..9719aa20 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -609,7 +609,7 @@ else(WIN32)
-     set(DBUS_SYSTEM_CONFIG_FILE  ${configdir}/system.conf)
-     set(DBUS_SESSION_CONFIG_FILE ${configdir}/session.conf)
+@@ -627,7 +627,7 @@ else(WIN32)
+     set(DBUS_SYSTEM_CONFIG_FILE  ${DBUS_DATADIR}/dbus-1/system.conf)
+     set(DBUS_SESSION_CONFIG_FILE ${DBUS_DATADIR}/dbus-1/session.conf)
      set(DBUS_USER "messagebus")
 -    set(DBUS_TEST_USER "nobody")
 +    set(DBUS_TEST_USER "boni")
@@ -21,5 +21,5 @@ index 994f7197..3716ce7f 100644
    # credentials-passing.
      set(DBUS_SESSION_CONF_MAYBE_AUTH_EXTERNAL "<auth>EXTERNAL</auth>")
 -- 
-2.34.1
+2.36.0
 

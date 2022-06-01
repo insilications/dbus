@@ -1,4 +1,4 @@
-From 53c4374765b3af4eed02908ce6b9ca183a908d8b Mon Sep 17 00:00:00 2001
+From 73f9bff18d6eb20a586ce8f7c0f5282558d74dcd Mon Sep 17 00:00:00 2001
 From: Francisco Boni <boboniboni@gmail.com>
 Date: Sat, 11 Dec 2021 20:18:35 -0300
 Subject: [PATCH 5/5] unset DBUS_FATAL_WARNINGS DBUS_SESSION_BUS_ADDRESS
@@ -10,7 +10,7 @@ Subject: [PATCH 5/5] unset DBUS_FATAL_WARNINGS DBUS_SESSION_BUS_ADDRESS
  3 files changed, 5 deletions(-)
 
 diff --git a/cmake/modules/Macros.cmake b/cmake/modules/Macros.cmake
-index 92fe9d81..8eb4308a 100644
+index f581508f..61371f9e 100644
 --- a/cmake/modules/Macros.cmake
 +++ b/cmake/modules/Macros.cmake
 @@ -57,8 +57,6 @@ macro(add_unit_test _name _target)
@@ -23,10 +23,10 @@ index 92fe9d81..8eb4308a 100644
      list(APPEND _env "DBUS_TEST_DATA=${DBUS_TEST_DATA}")
      list(APPEND _env "DBUS_TEST_DBUS_LAUNCH=${DBUS_TEST_DBUS_LAUNCH}")
 diff --git a/test/Makefile.am b/test/Makefile.am
-index b539524c..3d6d5605 100644
+index e89d8ad4..454240dd 100644
 --- a/test/Makefile.am
 +++ b/test/Makefile.am
-@@ -390,8 +390,6 @@ AM_TESTS_ENVIRONMENT = \
+@@ -397,8 +397,6 @@ AM_TESTS_ENVIRONMENT = \
  	export XDG_DATA_HOME=@abs_top_builddir@/test/XDG_DATA_HOME; \
  	export XDG_DATA_DIRS=@abs_top_builddir@/test/XDG_DATA_DIRS:@abs_top_builddir@/test/XDG_DATA_DIRS2; \
  	export XDG_RUNTIME_DIR=@abs_top_builddir@/test/XDG_RUNTIME_DIR; \
@@ -48,5 +48,5 @@ index 81938778..5fcd7d3f 100644
          export DBUS_TOP_SRCDIR=@abs_top_srcdir@; \
          export PATH="@abs_top_builddir@/bus:$$PATH"; \
 -- 
-2.34.1
+2.36.0
 
